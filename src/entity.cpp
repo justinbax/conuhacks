@@ -1,5 +1,6 @@
 #include "entity.h"
 
+
 Entity::Entity(std::string name, int xPos, int yPos, bool direction) {
     std::string imgDir = "content/" + name + "/";
     this->direction = direction;

@@ -32,12 +32,8 @@ int main() {
     }
 
     screenSurface = SDL_GetWindowSurface(window);
-    SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
 
     Entity player("bob", 100, 0, LEFT);
-    
-    player.draw(screenSurface);
-    SDL_UpdateWindowSurface(window);
 
     SDL_Event e;
     bool quit = false;
@@ -60,6 +56,10 @@ int main() {
                 player.move(1, 0);
             }
         }
+
+        SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
+        player.draw(screenSurface);
+        SDL_UpdateWindowSurface(window);
     }
 
     SDL_DestroyWindow(window);
