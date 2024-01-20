@@ -39,27 +39,32 @@ int main() {
     bool quit = false;
 
     while (!quit) {
+        uint64_t start = SDL_GetPerformanceCounter();
+
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
+        }
 
-            int numPresses = 0;
-            const uint8_t *state = SDL_GetKeyboardState(&numPresses);
-            if (state[SDL_SCANCODE_W]) {
-                player.move(0, -1);
-            } else if (state[SDL_SCANCODE_S]) {
-                player.move(0, 1);
-            } else if (state[SDL_SCANCODE_A]) {
-                player.move(-1, 0);
-            } else if (state[SDL_SCANCODE_D]) {
-                player.move(1, 0);
-            }
+        const uint8_t *state = SDL_GetKeyboardState(NULL);
+        if (state[SDL_SCANCODE_W]) {
+            player.move(0, -3);
+        } else if (state[SDL_SCANCODE_S]) {
+            player.move(0, 3);
+        } else if (state[SDL_SCANCODE_A]) {
+            player.move(-3, 0);
+        } else if (state[SDL_SCANCODE_D]) {
+            player.move(3, 0);
         }
 
         SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
         player.draw(screenSurface);
         SDL_UpdateWindowSurface(window);
+
+        uint64_t end = SDL_GetPerformanceCounter();
+        float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
+        SDL_Delay(floor(16.666f - elapsedMS));
     }
 
     SDL_DestroyWindow(window);
