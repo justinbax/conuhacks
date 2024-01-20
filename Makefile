@@ -21,10 +21,8 @@ LIBRARIES = SDL2
 
 ifeq ($(OS),Windows_NT)
 	CXXFLAGS += -D_WIN32 -DGLEW_STATIC
-	LIBDIR += $(BASELIBDIR)/win32
-	LIBRARIES += gdi32 winmm ole32 setupapi
-else
-	UNAME = $(shell uname -s)
+	LIBDIR = C:\Users\Nathan\Downloads\SDL2\SDL2-2.28.5\x86_64-w64-mingw32
+	LIBRARIES = mingw32 SDL2main SDL2
 	ifeq ($(UNAME),Linux)
 		CXXFLAGS += -D_LINUX
 		LIBDIR += /usr/lib
