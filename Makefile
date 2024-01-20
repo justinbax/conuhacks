@@ -29,6 +29,10 @@ else
 		CXXFLAGS += -D_LINUX
 		LIBDIR += /usr/lib
 		INCLUDEDIR += /usr/include
+	else
+		CXXFLAGS += -D_OSX
+		LIBDIR += /usr/local/lib
+		INCLUDEDIR += /usr/local/include
 	endif
 endif
 
