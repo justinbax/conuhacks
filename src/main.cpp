@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCR_WIDTH, SCR_HEIGHT, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Zombie Killer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCR_WIDTH, SCR_HEIGHT, SDL_WINDOW_SHOWN);
     if (window == NULL) {
         std::cout << "Window could not be created! SDL_Error: %s\n" << SDL_GetError() << "\n";
         return 1;
