@@ -23,9 +23,10 @@ ifeq ($(OS),Windows_NT)
 	CXXFLAGS += -D_WIN32 -DGLEW_STATIC
 # TODO fix this
 	LIBDIR = C:\Users\Nathan\Downloads\SDL2\SDL2-2.28.5\x86_64-w64-mingw32
-	LIBDIR += C:\Users\Nathan\Downloads\SDL2_image-devel-2.8.2-mingw
-	LIBDIR += C:\Users\Nathan\Downloads\SDL2_ttf-devel-2.21.2-mingw
+	LIBDIR += C:\Users\Nathan\Downloads\SDL2_image-devel-2.8.2-mingw\SDL2_image-2.8.2\x86_64-w64-mingw32
+	LIBDIR += C:\Users\Nathan\Downloads\SDL2_ttf-devel-2.21.2-mingw\SDL2_ttf-2.21.2\x86_64-w64-mingw32
 	LIBRARIES = mingw32 SDL2main SDL2
+else
 	ifeq ($(UNAME),Linux)
 		CXXFLAGS += -D_LINUX
 		LIBDIR += /usr/lib
