@@ -22,3 +22,6 @@ venv/*
 node_modules
 **/token.json
 **/*.env
+
+include
+lib
