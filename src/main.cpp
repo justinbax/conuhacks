@@ -26,10 +26,11 @@ int main() {
 
     screenSurface = SDL_GetWindowSurface(window);
     SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-    
-    SDL_UpdateWindowSurface(window);
 
     Player player("player.bmp");
+    
+    player.draw(screenSurface);
+    SDL_UpdateWindowSurface(window);
 
     SDL_Event e;
     bool quit = false;
@@ -39,8 +40,6 @@ int main() {
                 quit = true;
             }
         }
-
-        player.draw(screenSurface);
 
     }
 

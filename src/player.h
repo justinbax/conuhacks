@@ -6,11 +6,12 @@
 class Player {
     public:
         Player(std::string path);
+        ~Player();
         void draw(SDL_Surface *screen);
 
     private:
         int health;
-        Tile tile;
+        Tile *tile;
 };
 
 #endif // ifndef PLAYER_H
