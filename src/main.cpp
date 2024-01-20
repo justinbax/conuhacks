@@ -8,7 +8,7 @@
 #define SCR_WIDTH 640
 #define SCR_HEIGHT 480
 
-int main() {
+int main(int argc, char **argv) {
     std::cout << "A shooter game";
 
     SDL_Window *window = NULL;
