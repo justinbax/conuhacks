@@ -6,7 +6,7 @@
 class Player {
     public:
         Player(std::string path);
-        void draw();
+        void draw(SDL_Surface *screen);
 
     private:
         int health;

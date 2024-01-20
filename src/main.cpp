@@ -40,8 +40,8 @@ int main() {
             }
         }
 
-        player.draw();
-        
+        player.draw(screenSurface);
+
     }
 
     SDL_DestroyWindow(window);

@@ -4,6 +4,6 @@ Player::Player(std::string path) {
     this->tile = Tile(path);
 }
 
-void Player::draw() {
-    this->tile.draw();
+void Player::draw(SDL_Surface *screen) {
+    this->tile.draw(screen);
 }
