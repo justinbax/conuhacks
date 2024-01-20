@@ -11,3 +11,10 @@ Player::~Player() {
 void Player::draw(SDL_Surface *screen) {
     this->tile->draw(screen);
 }
+
+void Player::updateHealth(int offset) {
+    this->health += offset;
+    if (this->health > 100) {
+        this->health = 100;
+    }
+}

@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include "player.h"
 
@@ -12,9 +13,15 @@ int main() {
 
     SDL_Window *window = NULL;
     SDL_Surface *screenSurface = NULL;
+    int imgFlags = IMG_INIT_PNG;
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cout << "SDL could not initialize! SDL_Error:" << SDL_GetError() << "\n";
+        return 1;
+    }
+
+    if (!(IMG_Init(imgFlags) & imgFlags)) {
+        std::cout << "SDL_image could not initialize! SDL_image Error: " << IMG_GetError() << "\n";
         return 1;
     }
 
@@ -25,9 +32,9 @@ int main() {
     }
 
     screenSurface = SDL_GetWindowSurface(window);
-    SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
+    SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
 
-    Player player("player.bmp");
+    Player player("bob.png");
     
     player.draw(screenSurface);
     SDL_UpdateWindowSurface(window);

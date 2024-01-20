@@ -17,7 +17,7 @@ HEADFILES += $(wildcard $(SRCDIR)/*.hpp)
 HEADFILES += $(wildcard $(INCLUDEDIR)/*.h)
 HEADFILES += $(wildcard $(INCLUDEDIR)/*.hpp)
 
-LIBRARIES = SDL2
+LIBRARIES = SDL2 SDL2_image SDL2_ttf
 
 ifeq ($(OS),Windows_NT)
 	CXXFLAGS += -D_WIN32 -DGLEW_STATIC

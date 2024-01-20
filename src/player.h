@@ -8,6 +8,7 @@ class Player {
         Player(std::string path);
         ~Player();
         void draw(SDL_Surface *screen);
+        void updateHealth(int offset);
 
     private:
         int health;
