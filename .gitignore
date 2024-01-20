@@ -1,0 +1,24 @@
+# IDEs and Editors
+.vscode
+.vs
+**/.idea
+
+# Binaries and Applcations
+**/*.o
+**/*.out
+**/*.exe
+**/*.app
+main
+bin
+
+# Platform-specific files
+Thumbs.db
+**/._*
+.DS_Store
+venv/*
+
+**/Pipfile
+**/__pycache__
+node_modules
+**/token.json
+**/*.env
