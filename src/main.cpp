@@ -11,9 +11,25 @@
 #define SCR_HEIGHT 600
 
 Entity *spawnZombie() {
-    // zombie is the name of the folder! Need to update the pixel art
-    Entity *tmp = new Entity("zombie", 64, 64, LEFT);
-    return tmp;
+    // 50% normal - 25% small & fast - 25% big & slow
+    int type = rand() % 4;
+    int spot = rand() % 5;
+    int posX;
+
+    posX = spot == 0 ? 68 : spot == 1 ? 218 : spot == 2 ? 368 : spot == 3 ? 518 : 668;
+
+    if (type == 0 || type == 1) {
+        Entity *tmp = new Entity("zombie_normal", posX, 0, LEFT);
+        return tmp;
+    } else if (type == 2) {
+        Entity *tmp = new Entity("zombie_fast", posX, 0, LEFT);
+        return tmp;
+    } else if (type == 3) {
+        Entity *tmp = new Entity("zombie_big", posX, 0, LEFT);
+        return tmp;
+    }
+
+    return NULL;
 }
 
 void shoot(std::vector<Entity *> &bullets, int xPos, int yPos, bool direction) {
@@ -61,11 +77,11 @@ int main(int argc, char **argv) {
     Entity buildings_fore("buildings_fore", 0, 0, LEFT);
 
     // Ladder elements
-    Entity ladder1("ladder", 150, 125, LEFT);
+    Entity ladder1("ladder", 86, 125, LEFT);
     Entity ladder2("ladder", 650, 125, LEFT);
     Entity ladder3("ladder", 300, 275, LEFT);
-    Entity ladder4("ladder", 500, 275, LEFT);
-    Entity ladder5("ladder", 150, 425, LEFT);
+    Entity ladder4("ladder", 436, 275, LEFT);
+    Entity ladder5("ladder", 86, 425, LEFT);
     Entity ladder6("ladder", 650, 425, LEFT);
 
     
@@ -90,9 +106,18 @@ int main(int argc, char **argv) {
     bool quit = false;
 
     zombies.push_back(spawnZombie());
+    int zombieCounter = 0;
 
     while (!quit) {
         uint64_t start = SDL_GetPerformanceCounter();
+        zombieCounter++;
+
+        // Zombie generation - one per 5 seconds
+        zombieCounter++;
+
+        if (zombieCounter % 300 == 0) {
+            zombies.push_back(spawnZombie());
+        }
 
         // Poll for events
         while (SDL_PollEvent(&e)) {
