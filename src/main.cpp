@@ -60,13 +60,30 @@ int main(int argc, char **argv) {
     // Get window surface
     screenSurface = SDL_GetWindowSurface(window);
 
-    // Map elements
+    // Background elements
     Entity backdrop("backdrop", 0, 0, LEFT);
     Entity buildings_silhouette("buildings_silhouette", 0, 0, LEFT);
     Entity far_buildings("far_buildings", 0, 0, LEFT);
     Entity buildings_fore("buildings_fore", 0, 0, LEFT);
+
+    // Platform elements
+    Entity topPlatform("500", 150, 125, LEFT);
+    Entity leftPlatform("300", 0, 275, LEFT);
+    Entity rightPlatform("300", 500, 275, LEFT);
+    Entity bottomPlatform("500", 150, 425, LEFT);
+
+    // Ladder elements
+    Entity ladder1("ladder", 150, 125, LEFT);
+    Entity ladder2("ladder", 650, 125, LEFT);
+    Entity ladder3("ladder", 300, 275, LEFT);
+    Entity ladder4("ladder", 500, 275, LEFT);
+    Entity ladder5("ladder", 150, 425, LEFT);
+    Entity ladder6("ladder", 650, 425, LEFT);
+
+    // Active elements
     Entity player("shooter", 20, 460, LEFT);
-    Entity ground("dirt", 100, 0, LEFT); // Temporary coordinates - Will be removed next pull
+
+    // Other elements
     std::vector<Entity *> bullets;
     std::vector<Entity *> zombies;
     uint32_t lastShot = SDL_GetTicks();
@@ -120,12 +137,19 @@ int main(int argc, char **argv) {
         player.updatePos();
 
         SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
+        // Background drawing
         backdrop.draw(screenSurface);
         buildings_silhouette.draw(screenSurface);
         far_buildings.draw(screenSurface);
         buildings_fore.draw(screenSurface);
 
-        ground.draw(screenSurface);
+        // Map drawing
+        topPlatform.draw(screenSurface);
+        leftPlatform.draw(screenSurface);
+        rightPlatform.draw(screenSurface);
+        bottomPlatform.draw(screenSurface);
+
+        // Active elements drawing
         player.draw(screenSurface);
         
         for (int i = 0; i < zombies.size(); i++) {
