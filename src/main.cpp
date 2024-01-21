@@ -100,10 +100,10 @@ int main(int argc, char **argv) {
         player.yVel = (player.yVel >= 5.0f ? player.yVel : player.yVel + 0.3f);
         // Moving left and right
         if (state[SDL_SCANCODE_A]) {
-            player.xVel = -3;
+            player.xVel = -4;
             player.direction = LEFT;
         } else if (state[SDL_SCANCODE_D]) {
-            player.xVel = 3;
+            player.xVel = 4;
             player.direction = RIGHT;
         } else {
             player.xVel = 0;
@@ -129,6 +129,7 @@ int main(int argc, char **argv) {
         
         for (int i = 0; i < zombies.size(); i++) {
             zombies[i]->draw(screenSurface);
+            zombies[i]->moveZombie(&player, platforms);
             zombies[i]->updatePos();
             // Gravity
             zombies[i]->yVel += 0.3f;

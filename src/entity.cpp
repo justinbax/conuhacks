@@ -79,19 +79,10 @@ bool Entity::bouncePlatforms(std::vector<Platform *> plats) {
 //Player logic
 
 //Zombie logic
-void Entity::movementZombie() {
-    //if player is moving
-    //move player
-    //if player is not moving
-    //stop player
-    //repeat
+void Entity::moveZombie(Entity *player, std::vector<Platform *> plats) {
+    if (player->getXPos() < this->getXPos()) {
+        this->xVel = -3;
+    } else {
+        this->xVel = 3;
+    }
 }
-
-void Entity::damageZombie() {
-    //if zombie is hit
-    //zombie health - 1
-    //if zombie health = 0
-    //kill zombie
-    //repeat
-}
-

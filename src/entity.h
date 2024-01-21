@@ -17,11 +17,10 @@ class Entity {
         int getYPos();
         void updatePos();
         bool updateHealth(int offset);
-        void movementZombie();
-        void damageZombie();
         bool isOnFloor(int floorY);
         bool bouncePlatform(Platform plat);
         bool bouncePlatforms(std::vector<Platform *> plats);
+        void moveZombie(Entity *player, std::vector<Platform *> plats);
         float xVel;
         float yVel;
         bool direction;
