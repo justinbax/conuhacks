@@ -10,7 +10,7 @@ Tile::Tile(std::string path, int xPos, int yPos) {
     } else {
         this->surface = IMG_Load(path.c_str());
         if (this->surface == NULL) {
-            std::cout << "Couldn't load BMP " << path << "\n";
+            std::cout << "Couldn't load img " << path << "\n";
         }
     }
 

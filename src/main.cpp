@@ -27,14 +27,8 @@ void shoot(std::vector<Entity *> &bullets, int xPos, int yPos, bool direction) {
     bullets.push_back(bullet);
 }
 
-void loop(std::vector<Entity *> vec, void (*f)(Entity *)) {
-    for (int i = 0; i < vec.size(); i++) {
-        f(vec[i]);
-    }
-}
-
 int main(int argc, char **argv) {
-    std::cout << "A shooter game";
+    std::cout << "A shooter game\n";
 
     SDL_Window *window = NULL;
     SDL_Surface *screenSurface = NULL;
@@ -84,9 +78,18 @@ int main(int argc, char **argv) {
     Entity player("shooter", 20, 460, LEFT);
 
     // Other elements
+    
+    // Active elements   
+    Entity player("shooter", 20, 450, LEFT);
+    Entity ground("dirt", 100, 0, LEFT);
+
+    // Other elements
     std::vector<Entity *> bullets;
     std::vector<Entity *> zombies;
     uint32_t lastShot = SDL_GetTicks();
+
+    std::vector<Platform *> platforms;
+    platforms.push_back(new Platform("content/bob/bob-r.png", 800, 0, 600));
 
     SDL_Event e;
     bool quit = false;
@@ -100,23 +103,20 @@ int main(int argc, char **argv) {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
                 quit = true;
+                continue;
             }
         }
 
         // Handle keyboard input
         const uint8_t *state = SDL_GetKeyboardState(NULL);
         if (state[SDL_SCANCODE_W]) {
-            if (player.isOnFloor()) {
+            if (player.bouncePlatform(*platforms[0])) {
                 player.yVel = -7;
             }
         }
 
         // Physics logic
-        player.yVel += 0.3f;
-
-        if (player.yVel >= 0 && player.isOnFloor()) {
-            player.yVel = 0;
-        }
+        player.yVel = (player.yVel >= 5.0f ? player.yVel : player.yVel + 0.3f);
         // Moving left and right
         if (state[SDL_SCANCODE_A]) {
             player.xVel = -3;
@@ -135,6 +135,7 @@ int main(int argc, char **argv) {
         }
 
         player.updatePos();
+        player.bouncePlatforms(platforms);
 
         SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
         // Background drawing
@@ -155,12 +156,9 @@ int main(int argc, char **argv) {
         for (int i = 0; i < zombies.size(); i++) {
             zombies[i]->draw(screenSurface);
             zombies[i]->updatePos();
-
             // Gravity
             zombies[i]->yVel += 0.3f;
-            if (zombies[i]->yVel >= 0 && zombies[i]->isOnFloor()) {
-                zombies[i]->yVel = 0;
-            }
+            zombies[i]->bouncePlatforms(platforms);
         }
 
         for (int i = 0; i < bullets.size(); i++) {
@@ -184,13 +182,15 @@ int main(int argc, char **argv) {
             }
         }
 
+        for (int i = 0; i < platforms.size(); i++) {
+            platforms[i]->draw(screenSurface);
+        }
+
         SDL_UpdateWindowSurface(window);
 
         uint64_t end = SDL_GetPerformanceCounter();
         float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
         SDL_Delay(floor(16.666f - elapsedMS));
-
-        //TODO - checkQuitConditions();
     }
 
     SDL_DestroyWindow(window);

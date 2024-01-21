@@ -1,11 +1,13 @@
 #ifndef Entity_H
 #define Entity_H
 
+#include <vector>
+
 #include "tile.h"
+#include "platform.h"
 
 #define LEFT true
 #define RIGHT false
-
 class Entity {
     public:
         Entity(std::string name = "", int xPos = 0, int yPos = 0, bool direction = RIGHT);
@@ -17,7 +19,9 @@ class Entity {
         bool updateHealth(int offset);
         void movementZombie();
         void damageZombie();
-        bool isOnFloor();
+        bool isOnFloor(int floorY);
+        bool bouncePlatform(Platform plat);
+        bool bouncePlatforms(std::vector<Platform *> plats);
         float xVel;
         float yVel;
         bool direction;
