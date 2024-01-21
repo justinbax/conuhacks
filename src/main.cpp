@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -7,6 +8,17 @@
 
 #define SCR_WIDTH 800
 #define SCR_HEIGHT 600
+
+void shoot(std::vector<Entity *> &bullets, int xPos, int yPos, bool direction) {
+    Entity *bullet = new Entity("bullet", xPos, yPos, direction);
+    if (direction == LEFT) {
+        bullet->xVel = -5;
+    } else {
+        bullet->xVel = 5;
+    }
+
+    bullets.push_back(bullet);
+}
 
 int main(int argc, char **argv) {
     std::cout << "A shooter game";
@@ -35,7 +47,8 @@ int main(int argc, char **argv) {
 
     Entity player("bob", 100, 0, LEFT);
     Entity ground("dirt", 100, 0, LEFT);
-
+    std::vector<Entity *> bullets;
+    uint32_t lastShot = SDL_GetTicks();
 
     SDL_Event e;
     bool quit = false;
@@ -63,17 +76,30 @@ int main(int argc, char **argv) {
         
         if (state[SDL_SCANCODE_A]) {
             player.xVel = -3;
+            player.direction = LEFT;
         } else if (state[SDL_SCANCODE_D]) {
             player.xVel = 3;
+            player.direction = RIGHT;
         } else {
             player.xVel = 0;
+        }
+
+        if (state[SDL_SCANCODE_SPACE] && SDL_GetTicks() > lastShot + 500) {
+            shoot(bullets, player.getXPos(), player.getYPos(), player.direction);
+            lastShot = SDL_GetTicks();
         }
 
         player.updatePos();
 
         SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
+
         ground.draw(screenSurface);
         player.draw(screenSurface);
+        for (int i = 0; i < bullets.size(); i++) {
+            bullets[i]->draw(screenSurface);
+            bullets[i]->updatePos();
+        }
+
         SDL_UpdateWindowSurface(window);
 
         uint64_t end = SDL_GetPerformanceCounter();

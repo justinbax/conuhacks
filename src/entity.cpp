@@ -22,6 +22,14 @@ void Entity::draw(SDL_Surface *screen) {
     }
 }
 
+int Entity::getXPos() {
+    return this->tile_l->pos.x;
+}
+
+int Entity::getYPos() {
+    return this->tile_l->pos.y;
+}
+
 void Entity::updatePos() {
     this->tile_l->pos.x += this->xVel;
     this->tile_l->pos.y += this->yVel;
