@@ -11,9 +11,25 @@
 #define SCR_HEIGHT 600
 
 Entity *spawnZombie() {
-    // zombie is the name of the folder! Need to update the pixel art
-    Entity *tmp = new Entity("zombie", 64, 64, LEFT);
-    return tmp;
+    // 50% normal - 25% small & fast - 25% big & slow
+    int type = rand() % 4;
+    int spot = rand() % 5;
+    int posX;
+
+    posX = spot == 0 ? 68 : spot == 1 ? 218 : spot == 2 ? 368 : spot == 3 ? 518 : 668;
+
+    if (type == 0 || type == 1) {
+        Entity *tmp = new Entity("zombie_normal", posX, 0, LEFT);
+        return tmp;
+    } else if (type == 2) {
+        Entity *tmp = new Entity("zombie_fast", posX, 0, LEFT);
+        return tmp;
+    } else if (type == 3) {
+        Entity *tmp = new Entity("zombie_big", posX, 0, LEFT);
+        return tmp;
+    }
+
+    return NULL;
 }
 
 void shoot(std::vector<Entity *> &bullets, int xPos, int yPos, bool direction) {
@@ -88,11 +104,16 @@ int main(int argc, char **argv) {
 
     SDL_Event e;
     bool quit = false;
-
-    zombies.push_back(spawnZombie());
+    int zombieCounter = 0;
 
     while (!quit) {
         uint64_t start = SDL_GetPerformanceCounter();
+
+        // Zombie generator
+        if (zombieCounter % 300 == 0) {
+            zombies.push_back(spawnZombie());
+            zombieCounter = 0;
+        } zombieCounter++;
 
         // Poll for events
         while (SDL_PollEvent(&e)) {
