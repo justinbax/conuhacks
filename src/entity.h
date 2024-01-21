@@ -24,10 +24,10 @@ class Entity {
         float xVel;
         float yVel;
         bool direction;
+        bool cancelGravity;
 
     private:
         int health;
-        bool cancelGravity;
         Entity *zombieTargetLadder;
         Tile *tile_l;
         Tile *tile_r;

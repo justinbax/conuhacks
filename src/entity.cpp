@@ -1,5 +1,4 @@
 #include "entity.h"
-#include <iostream>
 
 Entity *getBestLadder(Entity *zombie, std::vector<Entity *> ladders, bool goUp) {
     int desiredLadderY = zombie->getYPos() + (goUp ? -128 : 128);
@@ -104,24 +103,22 @@ void Entity::moveZombie(Entity *player, std::vector<Platform *> plats, std::vect
     if (this->cancelGravity) {
         // Was already climbing a ladder; continue climbing
         if (this->yVel > 0) {
-            // Was climbing down
-            if (this->getYPos() - 128 >= this->zombieTargetLadder->getYPos() - 150) {
+            if (this->getYPos() + 131 >= this->zombieTargetLadder->getYPos() + 150) {
                 // Stop climbing
                 this->cancelGravity = false;
-                std::cout << "stop cancel\n";
                 this->zombieTargetLadder = NULL;
                 this->yVel = 0;
             }
         } else {
             // Was climbing up
-            if (this->getYPos() - 128 <= this->zombieTargetLadder->getYPos()) {
+            if (this->getYPos() + 125 <= this->zombieTargetLadder->getYPos()) {
                 // Stop climbing
                 this->cancelGravity = false;
-                std::cout << "stop cancel\n";
                 this->zombieTargetLadder = NULL;
                 this->yVel = 0;
             }
         }
+        return;
     }
 
     if (this->getYPos() - player->getYPos() >= 8) {
@@ -132,14 +129,14 @@ void Entity::moveZombie(Entity *player, std::vector<Platform *> plats, std::vect
             if (abs(bestLadder->getXPos() - this->getXPos()) < 8) {
                 this->xVel = 0;
                 this->cancelGravity = true;
-                std::cout << "cancel gravity\n";
                 this->zombieTargetLadder = bestLadder;
                 this->yVel = -3;
+                return;
+            } else {
+                this->direction = (bestLadder->getXPos() > this->getXPos() ? RIGHT : LEFT);
+                this->xVel = (this->direction == RIGHT ? 3 : -3);
+                return;
             }
-
-            this->direction = (bestLadder->getXPos() > this->getXPos() ? RIGHT : LEFT);
-            this->xVel = (this->direction == RIGHT ? 3 : -3);
-            return;
         }
 
     } else if (this->getYPos() - player->getYPos() <= -8) {
@@ -150,14 +147,16 @@ void Entity::moveZombie(Entity *player, std::vector<Platform *> plats, std::vect
             if (abs(bestLadder->getXPos() - this->getXPos()) < 8) {
                 this->xVel = 0;
                 this->cancelGravity = true;
-                std::cout << "cancel gravity\n";
                 this->zombieTargetLadder = bestLadder;
                 this->yVel = 3;
+                this->tile_l->pos.y += 4;
+                this->tile_r->pos.y += 4;
+                return;
+            } else {
+                this->direction = (bestLadder->getXPos() > this->getXPos() ? RIGHT : LEFT);
+                this->xVel = (this->direction == RIGHT ? 3 : -3);
+                return;
             }
-
-            this->direction = (bestLadder->getXPos() > this->getXPos() ? RIGHT : LEFT);
-            this->xVel = (this->direction == RIGHT ? 3 : -3);
-            return;
         }
     }
     // Sideways stuff

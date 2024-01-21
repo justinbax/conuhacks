@@ -147,7 +147,7 @@ int main(int argc, char **argv) {
             player.xVel = 0;
         }
 
-        if (state[SDL_SCANCODE_SPACE] && SDL_GetTicks() > lastShot + 500) {
+        if (state[SDL_SCANCODE_SPACE] && SDL_GetTicks() > lastShot + 300) {
             int bulletX = player.getXPos() + (player.direction == LEFT ? 0 : 48);
             shoot(bullets, bulletX, player.getYPos() + 50, player.direction);
             lastShot = SDL_GetTicks();
@@ -178,7 +178,7 @@ int main(int argc, char **argv) {
             zombies[i]->moveZombie(&player, platforms, ladders);
             zombies[i]->updatePos();
             // Gravity
-            zombies[i]->yVel += 0.3f;
+            if (!zombies[i]->cancelGravity) zombies[i]->yVel += 0.3f;
             zombies[i]->bouncePlatforms(platforms);
         }
 
