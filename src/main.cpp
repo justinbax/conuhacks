@@ -49,6 +49,7 @@ int main(int argc, char **argv) {
     SDL_Window *window = NULL;
     SDL_Surface *screenSurface = NULL;
     int imgFlags = IMG_INIT_PNG;
+    int zombieKilled = 0;
 
     // Initialize SDL - Throw error message if needed
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -189,14 +190,14 @@ int main(int argc, char **argv) {
             for (int j = 0; j < zombies.size(); j++) {
                 if (bullets[i]->getXPos() - zombies[j]->getXPos() > 0 && bullets[i]->getXPos() - zombies[j]->getXPos() < 64
                 && bullets[i]->getYPos() - zombies[j]->getYPos() > 0 && bullets[i]->getYPos() - zombies[j]->getYPos() < 128) {
+                    bullets.erase(bullets.begin() + i);
+                    
                     // Collision
                     if (zombies[j]->updateHealth(-25)) {
-                        Entity *zombie = zombies[j];
                         zombies.erase(zombies.begin() + j);
+                        zombieKilled++;
                         j--;
                     }
-                    Entity *bullet = bullets[i];
-                    bullets.erase(bullets.begin() + i);
                 }
             }
         }
@@ -218,6 +219,9 @@ int main(int argc, char **argv) {
         float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
         SDL_Delay(floor(16.666f - elapsedMS));
     }
+
+    std::cout << "You killed " << zombieKilled << " zombies!\n";
+    std::cout << "Your score is " << zombieKilled * 100 << "!\n";
 
     SDL_DestroyWindow(window);
     SDL_Quit();
