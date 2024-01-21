@@ -59,8 +59,13 @@ int main(int argc, char **argv) {
     Entity buildings_silhouette("buildings_silhouette", 0, 0, LEFT);
     Entity far_buildings("far_buildings", 0, 0, LEFT);
     Entity buildings_fore("buildings_fore", 0, 0, LEFT);
-    Entity player("shooter", 20, 350, LEFT);
-    Entity ground("dirt", 100, 0, LEFT); // Temporary coordinates - Will be removed next pull
+    
+    // Active elements   
+    Entity player("shooter", 20, 536, LEFT);
+    Entity zombie = spawnZombie();
+    Entity ground("dirt", 100, 0, LEFT);
+
+    // Other elements
     std::vector<Entity *> bullets;
     std::vector<Entity *> zombies;
     uint32_t lastShot = SDL_GetTicks();
