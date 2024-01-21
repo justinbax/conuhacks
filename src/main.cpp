@@ -61,8 +61,7 @@ int main(int argc, char **argv) {
     Entity buildings_fore("buildings_fore", 0, 0, LEFT);
     
     // Active elements   
-    Entity player("shooter", 20, 536, LEFT);
-    Entity zombie = spawnZombie();
+    Entity player("shooter", 20, 450, LEFT);
     Entity ground("dirt", 100, 0, LEFT);
 
     // Other elements
