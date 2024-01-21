@@ -187,17 +187,16 @@ int main(int argc, char **argv) {
 
             // TODO check if out of bounds
             for (int j = 0; j < zombies.size(); j++) {
-                if (bullets[i]->getXPos() - zombies[j]->getXPos() < 32 && bullets[i]->getXPos() - zombies[j]->getXPos() < 64) {
+                if (bullets[i]->getXPos() - zombies[j]->getXPos() > 0 && bullets[i]->getXPos() - zombies[j]->getXPos() < 64
+                && bullets[i]->getYPos() - zombies[j]->getYPos() > 0 && bullets[i]->getYPos() - zombies[j]->getYPos() < 128) {
                     // Collision
                     if (zombies[j]->updateHealth(-25)) {
                         Entity *zombie = zombies[j];
                         zombies.erase(zombies.begin() + j);
                         j--;
-                        delete zombie;
                     }
                     Entity *bullet = bullets[i];
                     bullets.erase(bullets.begin() + i);
-                    delete bullet;
                 }
             }
         }
