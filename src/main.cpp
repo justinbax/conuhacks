@@ -34,6 +34,8 @@ int main(int argc, char **argv) {
     screenSurface = SDL_GetWindowSurface(window);
 
     Entity player("bob", 100, 0, LEFT);
+    Entity ground("dirt", 100, 0, LEFT);
+
 
     SDL_Event e;
     bool quit = false;
@@ -58,6 +60,7 @@ int main(int argc, char **argv) {
         }
 
         SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
+        ground.draw(screenSurface);
         player.draw(screenSurface);
         SDL_UpdateWindowSurface(window);
     }
