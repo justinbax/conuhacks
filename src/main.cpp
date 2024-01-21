@@ -54,22 +54,18 @@ int main(int argc, char **argv) {
     // Get window surface
     screenSurface = SDL_GetWindowSurface(window);
 
-<<<<<<< HEAD
+    // Map elements
     Entity backdrop("backdrop", 0, 0, LEFT);
     Entity buildings_silhouette("buildings_silhouette", 0, 0, LEFT);
     Entity far_buildings("far_buildings", 0, 0, LEFT);
     Entity buildings_fore("buildings_fore", 0, 0, LEFT);
-    Entity player("shooter", 100, 0, LEFT);
-    Entity ground("dirt", 100, 0, LEFT);
-=======
-    Entity backdrop("backdrop", 100, 0, LEFT);
-    Entity buildings_silhouette("buildings_silhouette", 100, 0, LEFT);
-    Entity far_buildings("far_buildings", 100, 0, LEFT);
-    Entity buildings_fore("buildings_fore", 100, 0, LEFT);
+    
+    // Active elements   
     Entity player("shooter", 20, 536, LEFT);
     Entity zombie = spawnZombie();
-    Entity ground("dirt", 100, 0, LEFT); // Temporary coordinates - Will be removed next pull
->>>>>>> 7f959dd77f4155fea24ac5d5330dbf38dc801579
+    Entity ground("dirt", 100, 0, LEFT);
+
+    // Other elements
     std::vector<Entity *> bullets;
     std::vector<Entity *> zombies;
     uint32_t lastShot = SDL_GetTicks();
@@ -129,7 +125,7 @@ int main(int argc, char **argv) {
         player.draw(screenSurface);
         zombie.draw(screenSurface);
         zombie.updatePos();
-        
+
         for (int i = 0; i < bullets.size(); i++) {
             bullets[i]->draw(screenSurface);
             bullets[i]->updatePos();
