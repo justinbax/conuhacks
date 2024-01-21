@@ -13,6 +13,9 @@ class Entity {
         void draw(SDL_Surface *screen);
         void updatePos();
         void updateHealth(int offset);
+        void movementZombie();
+        Entity spawnZombie();
+        void damageZombie();
         bool isOnFloor();
         int xVel;
         int yVel;

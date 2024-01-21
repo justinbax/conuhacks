@@ -37,3 +37,23 @@ void Entity::updateHealth(int offset) {
 bool Entity::isOnFloor() {
     return true;
 }
+
+//Player logic
+
+//Zombie logic
+void Entity::movementZombie() {
+    //if player is moving
+    //move player
+    //if player is not moving
+    //stop player
+    //repeat
+}
+
+void Entity::damageZombie() {
+    //if zombie is hit
+    //zombie health - 1
+    //if zombie health = 0
+    //kill zombie
+    //repeat
+}
+
