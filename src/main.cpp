@@ -10,6 +10,12 @@
 #define SCR_WIDTH 800
 #define SCR_HEIGHT 600
 
+Entity spawnZombie() {
+    //zombie is the name of the folder! Need to update the pixel art
+    Entity tmp("zombie", 64, 64, LEFT);
+    return tmp;
+}
+
 void shoot(std::vector<Entity *> &bullets, int xPos, int yPos, bool direction) {
     Entity *bullet = new Entity("bullet", xPos, yPos, direction);
     if (direction == LEFT) {
@@ -28,6 +34,7 @@ int main(int argc, char **argv) {
     SDL_Surface *screenSurface = NULL;
     int imgFlags = IMG_INIT_PNG;
 
+    // Initialize SDL - Throw error message if needed
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cout << "SDL could not initialize! SDL_Error:" << SDL_GetError() << "\n";
         return 1;
@@ -44,14 +51,25 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    // Get window surface
     screenSurface = SDL_GetWindowSurface(window);
 
+<<<<<<< HEAD
+    Entity backdrop("backdrop", 0, 0, LEFT);
+    Entity buildings_silhouette("buildings_silhouette", 0, 0, LEFT);
+    Entity far_buildings("far_buildings", 0, 0, LEFT);
+    Entity buildings_fore("buildings_fore", 0, 0, LEFT);
+    Entity player("shooter", 100, 0, LEFT);
+    Entity ground("dirt", 100, 0, LEFT);
+=======
     Entity backdrop("backdrop", 100, 0, LEFT);
     Entity buildings_silhouette("buildings_silhouette", 100, 0, LEFT);
     Entity far_buildings("far_buildings", 100, 0, LEFT);
     Entity buildings_fore("buildings_fore", 100, 0, LEFT);
-    Entity player("shooter", 100, 0, LEFT);
-    Entity ground("dirt", 100, 0, LEFT);
+    Entity player("shooter", 20, 536, LEFT);
+    Entity zombie = spawnZombie();
+    Entity ground("dirt", 100, 0, LEFT); // Temporary coordinates - Will be removed next pull
+>>>>>>> 7f959dd77f4155fea24ac5d5330dbf38dc801579
     std::vector<Entity *> bullets;
     std::vector<Entity *> zombies;
     uint32_t lastShot = SDL_GetTicks();
@@ -62,12 +80,14 @@ int main(int argc, char **argv) {
     while (!quit) {
         uint64_t start = SDL_GetPerformanceCounter();
 
+        // Poll for events
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
         }
 
+        // Handle keyboard input
         const uint8_t *state = SDL_GetKeyboardState(NULL);
         if (state[SDL_SCANCODE_W]) {
             if (player.isOnFloor()) {
@@ -75,11 +95,12 @@ int main(int argc, char **argv) {
             }
         }
 
+        // Physics logic
         player.yVel += 0.3f;
         if (player.yVel >= 0 && player.isOnFloor()) {
             player.yVel = 0;
         }
-        
+        // Moving left and right
         if (state[SDL_SCANCODE_A]) {
             player.xVel = -3;
             player.direction = LEFT;
@@ -106,6 +127,9 @@ int main(int argc, char **argv) {
 
         ground.draw(screenSurface);
         player.draw(screenSurface);
+        zombie.draw(screenSurface);
+        zombie.updatePos();
+        
         for (int i = 0; i < bullets.size(); i++) {
             bullets[i]->draw(screenSurface);
             bullets[i]->updatePos();
@@ -128,6 +152,8 @@ int main(int argc, char **argv) {
         uint64_t end = SDL_GetPerformanceCounter();
         float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
         SDL_Delay(floor(16.666f - elapsedMS));
+
+        //TODO - checkQuitConditions();
     }
 
     SDL_DestroyWindow(window);
