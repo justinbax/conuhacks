@@ -30,7 +30,7 @@ else
 		INCLUDEDIR += /usr/include
 	else
 		CXXFLAGS += -D_OSX
-		LIBDIR += /usr/local/lib /opt/homebrew/lib
+		LIBDIR += /opt/homebrew/lib
 		INCLUDEDIR += /usr/local/include
 	endif
 endif
