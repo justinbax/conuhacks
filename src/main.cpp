@@ -60,12 +60,6 @@ int main(int argc, char **argv) {
     Entity far_buildings("far_buildings", 0, 0, LEFT);
     Entity buildings_fore("buildings_fore", 0, 0, LEFT);
 
-    // Platform elements
-    Entity topPlatform("500", 150, 125, LEFT);
-    Entity leftPlatform("300", 0, 275, LEFT);
-    Entity rightPlatform("300", 500, 275, LEFT);
-    Entity bottomPlatform("500", 150, 425, LEFT);
-
     // Ladder elements
     Entity ladder1("ladder", 150, 125, LEFT);
     Entity ladder2("ladder", 650, 125, LEFT);
@@ -74,10 +68,6 @@ int main(int argc, char **argv) {
     Entity ladder5("ladder", 150, 425, LEFT);
     Entity ladder6("ladder", 650, 425, LEFT);
 
-    // Active elements
-    Entity player("shooter", 20, 460, LEFT);
-
-    // Other elements
     
     // Active elements   
     Entity player("shooter", 20, 450, LEFT);
@@ -89,7 +79,12 @@ int main(int argc, char **argv) {
     uint32_t lastShot = SDL_GetTicks();
 
     std::vector<Platform *> platforms;
-    platforms.push_back(new Platform("content/bob/bob-r.png", 800, 0, 600));
+    platforms.push_back(new Platform("content/transparent.png", 1000, -100, 600));
+    platforms.push_back(new Platform("content/500/500-r.png", 500, 150, 125));
+    platforms.push_back(new Platform("content/300/300-r.png", 300, 0, 275));
+    platforms.push_back(new Platform("content/300/300-r.png", 300, 500, 275));
+    platforms.push_back(new Platform("content/500/500-r.png", 500, 150, 425));
+
 
     SDL_Event e;
     bool quit = false;
@@ -144,11 +139,16 @@ int main(int argc, char **argv) {
         far_buildings.draw(screenSurface);
         buildings_fore.draw(screenSurface);
 
-        // Map drawing
-        topPlatform.draw(screenSurface);
-        leftPlatform.draw(screenSurface);
-        rightPlatform.draw(screenSurface);
-        bottomPlatform.draw(screenSurface);
+        ladder1.draw(screenSurface);
+        ladder2.draw(screenSurface);
+        ladder3.draw(screenSurface);
+        ladder4.draw(screenSurface);
+        ladder5.draw(screenSurface);
+        ladder6.draw(screenSurface);
+
+        for (int i = 0; i < platforms.size(); i++) {
+            platforms[i]->draw(screenSurface);
+        }
 
         // Active elements drawing
         player.draw(screenSurface);
@@ -181,10 +181,6 @@ int main(int argc, char **argv) {
                     delete bullet;
                 }
             }
-        }
-
-        for (int i = 0; i < platforms.size(); i++) {
-            platforms[i]->draw(screenSurface);
         }
 
         SDL_UpdateWindowSurface(window);
