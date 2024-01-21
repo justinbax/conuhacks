@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <cmath>
 
 #include "entity.h"
 
@@ -33,7 +34,11 @@ int main(int argc, char **argv) {
 
     screenSurface = SDL_GetWindowSurface(window);
 
-    Entity player("bob", 100, 0, LEFT);
+    Entity backdrop("backdrop", 100, 0, LEFT);
+    Entity buildings_silhouette("buildings_silhouette", 100, 0, LEFT);
+    Entity far_buildings("far_buildings", 100, 0, LEFT);
+    Entity buildings_fore("buildings_fore", 100, 0, LEFT);
+    Entity player("shooter", 100, 0, LEFT);
     Entity ground("dirt", 100, 0, LEFT);
 
 
@@ -72,6 +77,10 @@ int main(int argc, char **argv) {
         player.updatePos();
 
         SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
+        backdrop.draw(screenSurface);
+        buildings_silhouette.draw(screenSurface);
+        far_buildings.draw(screenSurface);
+        buildings_fore.draw(screenSurface);
         ground.draw(screenSurface);
         player.draw(screenSurface);
         SDL_UpdateWindowSurface(window);
