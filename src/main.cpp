@@ -10,9 +10,9 @@
 #define SCR_WIDTH 800
 #define SCR_HEIGHT 600
 
-Entity spawnZombie() {
-    //zombie is the name of the folder! Need to update the pixel art
-    Entity tmp("zombie", 64, 64, LEFT);
+Entity *spawnZombie() {
+    // zombie is the name of the folder! Need to update the pixel art
+    Entity *tmp = new Entity("zombie", 64, 64, LEFT);
     return tmp;
 }
 
@@ -25,6 +25,12 @@ void shoot(std::vector<Entity *> &bullets, int xPos, int yPos, bool direction) {
     }
 
     bullets.push_back(bullet);
+}
+
+void loop(std::vector<Entity *> vec, void (*f)(Entity *)) {
+    for (int i = 0; i < vec.size(); i++) {
+        f(vec[i]);
+    }
 }
 
 int main(int argc, char **argv) {
@@ -54,28 +60,20 @@ int main(int argc, char **argv) {
     // Get window surface
     screenSurface = SDL_GetWindowSurface(window);
 
-<<<<<<< HEAD
     Entity backdrop("backdrop", 0, 0, LEFT);
     Entity buildings_silhouette("buildings_silhouette", 0, 0, LEFT);
     Entity far_buildings("far_buildings", 0, 0, LEFT);
     Entity buildings_fore("buildings_fore", 0, 0, LEFT);
-    Entity player("shooter", 100, 0, LEFT);
-    Entity ground("dirt", 100, 0, LEFT);
-=======
-    Entity backdrop("backdrop", 100, 0, LEFT);
-    Entity buildings_silhouette("buildings_silhouette", 100, 0, LEFT);
-    Entity far_buildings("far_buildings", 100, 0, LEFT);
-    Entity buildings_fore("buildings_fore", 100, 0, LEFT);
-    Entity player("shooter", 20, 536, LEFT);
-    Entity zombie = spawnZombie();
+    Entity player("shooter", 20, 460, LEFT);
     Entity ground("dirt", 100, 0, LEFT); // Temporary coordinates - Will be removed next pull
->>>>>>> 7f959dd77f4155fea24ac5d5330dbf38dc801579
     std::vector<Entity *> bullets;
     std::vector<Entity *> zombies;
     uint32_t lastShot = SDL_GetTicks();
 
     SDL_Event e;
     bool quit = false;
+
+    zombies.push_back(spawnZombie());
 
     while (!quit) {
         uint64_t start = SDL_GetPerformanceCounter();
@@ -97,6 +95,7 @@ int main(int argc, char **argv) {
 
         // Physics logic
         player.yVel += 0.3f;
+
         if (player.yVel >= 0 && player.isOnFloor()) {
             player.yVel = 0;
         }
@@ -127,9 +126,18 @@ int main(int argc, char **argv) {
 
         ground.draw(screenSurface);
         player.draw(screenSurface);
-        zombie.draw(screenSurface);
-        zombie.updatePos();
         
+        for (int i = 0; i < zombies.size(); i++) {
+            zombies[i]->draw(screenSurface);
+            zombies[i]->updatePos();
+
+            // Gravity
+            zombies[i]->yVel += 0.3f;
+            if (zombies[i]->yVel >= 0 && zombies[i]->isOnFloor()) {
+                zombies[i]->yVel = 0;
+            }
+        }
+
         for (int i = 0; i < bullets.size(); i++) {
             bullets[i]->draw(screenSurface);
             bullets[i]->updatePos();
@@ -138,8 +146,12 @@ int main(int argc, char **argv) {
             for (int j = 0; j < zombies.size(); j++) {
                 if (bullets[i]->getXPos() - zombies[j]->getXPos() < 32 && bullets[i]->getXPos() - zombies[j]->getXPos() < 64) {
                     // Collision
-                    std::cout << "collision";
-                    zombies[j]->updateHealth(-10);
+                    if (zombies[j]->updateHealth(-25)) {
+                        Entity *zombie = zombies[j];
+                        zombies.erase(zombies.begin() + j);
+                        j--;
+                        delete zombie;
+                    }
                     Entity *bullet = bullets[i];
                     bullets.erase(bullets.begin() + i);
                     delete bullet;

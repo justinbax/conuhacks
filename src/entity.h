@@ -14,9 +14,8 @@ class Entity {
         int getXPos();
         int getYPos();
         void updatePos();
-        void updateHealth(int offset);
+        bool updateHealth(int offset);
         void movementZombie();
-        Entity spawnZombie();
         void damageZombie();
         bool isOnFloor();
         float xVel;

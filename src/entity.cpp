@@ -7,6 +7,7 @@ Entity::Entity(std::string name, int xPos, int yPos, bool direction) {
     this->tile_r = new Tile(imgDir + name + "-r.png", xPos, yPos);
     this->xVel = 0;
     this->yVel = 0;
+    this->health = 100;
 }
 
 Entity::~Entity() {
@@ -37,11 +38,12 @@ void Entity::updatePos() {
     this->tile_r->pos.y += this->yVel;
 }
 
-void Entity::updateHealth(int offset) {
+bool Entity::updateHealth(int offset) {
     this->health += offset;
     if (this->health > 100) {
         this->health = 100;
     }
+    return this->health <= 0;
 }
 
 bool Entity::isOnFloor() {
