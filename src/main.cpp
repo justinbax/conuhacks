@@ -46,10 +46,10 @@ int main(int argc, char **argv) {
 
     screenSurface = SDL_GetWindowSurface(window);
 
-    Entity backdrop("backdrop", 100, 0, LEFT);
-    Entity buildings_silhouette("buildings_silhouette", 100, 0, LEFT);
-    Entity far_buildings("far_buildings", 100, 0, LEFT);
-    Entity buildings_fore("buildings_fore", 100, 0, LEFT);
+    Entity backdrop("backdrop", 0, 0, LEFT);
+    Entity buildings_silhouette("buildings_silhouette", 0, 0, LEFT);
+    Entity far_buildings("far_buildings", 0, 0, LEFT);
+    Entity buildings_fore("buildings_fore", 0, 0, LEFT);
     Entity player("shooter", 100, 0, LEFT);
     Entity ground("dirt", 100, 0, LEFT);
     std::vector<Entity *> bullets;
