@@ -20,13 +20,15 @@ class Entity {
         bool isOnFloor(int floorY);
         bool bouncePlatform(Platform plat);
         bool bouncePlatforms(std::vector<Platform *> plats);
-        void moveZombie(Entity *player, std::vector<Platform *> plats);
+        void moveZombie(Entity *player, std::vector<Platform *> plats, std::vector<Entity *> ladders);
         float xVel;
         float yVel;
         bool direction;
 
     private:
         int health;
+        bool cancelGravity;
+        Entity *zombieTargetLadder;
         Tile *tile_l;
         Tile *tile_r;
 };

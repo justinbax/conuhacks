@@ -60,14 +60,6 @@ int main(int argc, char **argv) {
     Entity far_buildings("far_buildings", 0, 0, LEFT);
     Entity buildings_fore("buildings_fore", 0, 0, LEFT);
 
-    // Ladder elements
-    Entity ladder1("ladder", 150, 125, LEFT);
-    Entity ladder2("ladder", 650, 125, LEFT);
-    Entity ladder3("ladder", 300, 275, LEFT);
-    Entity ladder4("ladder", 500, 275, LEFT);
-    Entity ladder5("ladder", 150, 425, LEFT);
-    Entity ladder6("ladder", 650, 425, LEFT);
-
     
     // Active elements   
     Entity player("shooter", 20, 450, LEFT);
@@ -79,11 +71,20 @@ int main(int argc, char **argv) {
     uint32_t lastShot = SDL_GetTicks();
 
     std::vector<Platform *> platforms;
+    std::vector<Entity *> ladders;
+    
     platforms.push_back(new Platform("content/transparent.png", 1000, -100, 600));
     platforms.push_back(new Platform("content/500/500-r.png", 500, 150, 125));
     platforms.push_back(new Platform("content/300/300-r.png", 300, 0, 275));
     platforms.push_back(new Platform("content/300/300-r.png", 300, 500, 275));
     platforms.push_back(new Platform("content/500/500-r.png", 500, 150, 425));
+
+    ladders.push_back(new Entity("ladder", 150, 125, LEFT));
+    ladders.push_back(new Entity("ladder", 650, 125, LEFT));
+    ladders.push_back(new Entity("ladder", 300, 275, LEFT));
+    ladders.push_back(new Entity("ladder", 500, 275, LEFT));
+    ladders.push_back(new Entity("ladder", 150, 425, LEFT));
+    ladders.push_back(new Entity("ladder", 650, 425, LEFT));
 
 
     SDL_Event e;
@@ -139,15 +140,11 @@ int main(int argc, char **argv) {
         far_buildings.draw(screenSurface);
         buildings_fore.draw(screenSurface);
 
-        ladder1.draw(screenSurface);
-        ladder2.draw(screenSurface);
-        ladder3.draw(screenSurface);
-        ladder4.draw(screenSurface);
-        ladder5.draw(screenSurface);
-        ladder6.draw(screenSurface);
-
         for (int i = 0; i < platforms.size(); i++) {
             platforms[i]->draw(screenSurface);
+        }
+        for (int i = 0; i < ladders.size(); i++) {
+            ladders[i]->draw(screenSurface);
         }
 
         // Active elements drawing
@@ -155,7 +152,7 @@ int main(int argc, char **argv) {
         
         for (int i = 0; i < zombies.size(); i++) {
             zombies[i]->draw(screenSurface);
-            zombies[i]->moveZombie(&player, platforms);
+            zombies[i]->moveZombie(&player, platforms, ladders);
             zombies[i]->updatePos();
             // Gravity
             zombies[i]->yVel += 0.3f;
