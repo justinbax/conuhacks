@@ -11,8 +11,11 @@ class Entity {
         Entity(std::string name = "", int xPos = 0, int yPos = 0, bool direction = RIGHT);
         ~Entity();
         void draw(SDL_Surface *screen);
-        void move(int xOffset, int yOffset);
+        void updatePos();
         void updateHealth(int offset);
+        bool isOnFloor();
+        int xVel;
+        int yVel;
 
     private:
         int health;

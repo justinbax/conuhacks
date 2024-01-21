@@ -5,8 +5,8 @@
 
 #include "entity.h"
 
-#define SCR_WIDTH 640
-#define SCR_HEIGHT 480
+#define SCR_WIDTH 800
+#define SCR_HEIGHT 600
 
 int main(int argc, char **argv) {
     std::cout << "A shooter game";
@@ -33,8 +33,7 @@ int main(int argc, char **argv) {
 
     screenSurface = SDL_GetWindowSurface(window);
 
-    Entity player("bob", 100, 0, LEFT);
-
+    Entity player("bob", 100, 400, LEFT);
     SDL_Event e;
     bool quit = false;
 
@@ -49,14 +48,25 @@ int main(int argc, char **argv) {
 
         const uint8_t *state = SDL_GetKeyboardState(NULL);
         if (state[SDL_SCANCODE_W]) {
-            player.move(0, -3);
-        } else if (state[SDL_SCANCODE_S]) {
-            player.move(0, 3);
-        } else if (state[SDL_SCANCODE_A]) {
-            player.move(-3, 0);
-        } else if (state[SDL_SCANCODE_D]) {
-            player.move(3, 0);
+            if (player.isOnFloor()) {
+                player.yVel = -10;
+            }
         }
+
+        player.yVel++;
+        if (player.yVel > 0) {
+            player.yVel = 0;
+        }
+
+        if (state[SDL_SCANCODE_A]) {
+            player.xVel = -3;
+        } else if (state[SDL_SCANCODE_D]) {
+            player.xVel = 3;
+        } else {
+            player.xVel = 0;
+        }
+
+        player.updatePos();
 
         SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
         player.draw(screenSurface);
