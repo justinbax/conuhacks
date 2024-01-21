@@ -91,7 +91,8 @@ int main(int argc, char **argv) {
         }
 
         if (state[SDL_SCANCODE_SPACE] && SDL_GetTicks() > lastShot + 500) {
-            shoot(bullets, player.getXPos(), player.getYPos(), player.direction);
+            int bulletX = player.getXPos() + (player.direction == LEFT ? 0 : 48);
+            shoot(bullets, bulletX, player.getYPos() + 50, player.direction);
             lastShot = SDL_GetTicks();
         }
 

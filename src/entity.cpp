@@ -45,7 +45,7 @@ void Entity::updateHealth(int offset) {
 }
 
 bool Entity::isOnFloor() {
-    if (this->tile_l->pos.y >= 550) {
+    if (this->tile_l->pos.y >= 600 - 128) {
         return true;
     }
     return false;
