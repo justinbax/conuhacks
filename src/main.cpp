@@ -124,6 +124,7 @@ int main(int argc, char **argv) {
     SDL_Color white = {0xFF, 0xFF, 0xFF};
 
     bool gameOver = false;
+    bool welcomeScreen = true;
     SDL_Event e;
     bool quit = false;
     int zombieCounter = 0;
@@ -154,6 +155,25 @@ int main(int argc, char **argv) {
             buildings_fore.draw(screenSurface);
             gameOver.draw(screenSurface, 200, 300);
             SDL_UpdateWindowSurface(window);
+
+            uint64_t end = SDL_GetPerformanceCounter();
+            float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
+            SDL_Delay(floor(16.666f - elapsedMS));
+            continue;
+
+        } else if (welcomeScreen) {
+            std::string welcomeText = "Welcome to Deadly Byte.\nPress space to start...";
+            Text welcome(welcomeText, white, font);
+            SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
+            backdrop.draw(screenSurface);
+            buildings_silhouette.draw(screenSurface);
+            welcome.draw(screenSurface, 150, 300);
+            SDL_UpdateWindowSurface(window);
+
+            const uint8_t *state = SDL_GetKeyboardState(NULL);
+            if (state[SDL_SCANCODE_SPACE]) {
+                welcomeScreen = false;
+            }
 
             uint64_t end = SDL_GetPerformanceCounter();
             float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
