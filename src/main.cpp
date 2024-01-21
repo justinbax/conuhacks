@@ -87,7 +87,13 @@ int main(int argc, char **argv) {
 
     
     // Active elements
-    std::vector<std::string> shootersTiles = {"shooter1", "shooter2", "shooter3", "shooter4", "shooter5", "shooter6"};
+    std::vector<std::string> shootersTiles;
+    shootersTiles.push_back("shooter1");
+    shootersTiles.push_back("shooter2");
+    shootersTiles.push_back("shooter3");
+    shootersTiles.push_back("shooter4");
+    shootersTiles.push_back("shooter5");
+    shootersTiles.push_back("shooter6");
     Entity player(shootersTiles, 20, 450, LEFT);
     Entity ground("dirt", 100, 0, LEFT);
 
