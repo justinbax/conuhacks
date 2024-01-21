@@ -52,15 +52,15 @@ int main(int argc, char **argv) {
         const uint8_t *state = SDL_GetKeyboardState(NULL);
         if (state[SDL_SCANCODE_W]) {
             if (player.isOnFloor()) {
-                player.yVel = -10;
+                player.yVel = -7;
             }
         }
 
-        player.yVel++;
-        if (player.yVel > 0) {
+        player.yVel += 0.3f;
+        if (player.yVel >= 0 && player.isOnFloor()) {
             player.yVel = 0;
         }
-
+        
         if (state[SDL_SCANCODE_A]) {
             player.xVel = -3;
         } else if (state[SDL_SCANCODE_D]) {

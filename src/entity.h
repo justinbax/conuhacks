@@ -14,8 +14,8 @@ class Entity {
         void updatePos();
         void updateHealth(int offset);
         bool isOnFloor();
-        int xVel;
-        int yVel;
+        float xVel;
+        float yVel;
 
     private:
         int health;

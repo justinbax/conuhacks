@@ -31,8 +31,3 @@ Tile::~Tile() {
 void Tile::draw(SDL_Surface *screen) {
     SDL_BlitSurface(this->surface, NULL, screen, &this->pos);
 }
-
-void Tile::move(int xOffset, int yOffset) {
-    this->pos.x += xOffset;
-    this->pos.y += yOffset;
-}
