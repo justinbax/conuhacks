@@ -128,14 +128,47 @@ int main(int argc, char **argv) {
 
         // Handle keyboard input
         const uint8_t *state = SDL_GetKeyboardState(NULL);
+        // If already on ladder
+        if (player.cancelGravity) {
+            // Check if still close enough to ladder
+            if (player.targetLadder->getXPos() - player.getXPos() > 32 || player.targetLadder->getXPos() - player.getXPos() < -32
+            || player.getYPos() + 125 >= player.targetLadder->getYPos() || player.getYPos() + 128 <= player.targetLadder->getYPos() + 200) {
+                // Cancel the being on ladder
+                player.cancelGravity = false;
+                player.yVel = 0;
+                player.targetLadder = NULL;
+            }
+
+            // Check if W is pressed or not
+            if (state[SDL_SCANCODE_W]) {
+                player.yVel = 3;
+            } else if (state[SDL_SCANCODE_S]) {
+                player.yVel = -3;
+            } else {
+                player.yVel = 0;
+            }
+        }
         if (state[SDL_SCANCODE_W]) {
+            // Search if player is on ladder
+            for (int i = 0; i < ladders.size(); i++) {
+                if (ladders[i]->getXPos() - player.getXPos() < 32 && ladders[i]->getXPos() - player.getXPos() > -32) {
+                    if (player.getYPos() + 128 >= ladders[i]->getYPos() && player.getYPos() + 128 <= ladders[i]->getYPos() + 200) {
+                        player.targetLadder = ladders[i];
+                        player.cancelGravity = true;
+                        player.yVel = -3;
+                        break;
+                    }
+                }
+            }
+
+            // Else jumps
             if (player.bouncePlatform(*platforms[0])) {
                 player.yVel = -7;
             }
         }
 
         // Physics logic
-        player.yVel = (player.yVel >= 5.0f ? player.yVel : player.yVel + 0.3f);
+        player.yVel = (player.yVel >= 5.0f || player.cancelGravity ? player.yVel : player.yVel + 0.3f);
         // Moving left and right
         if (state[SDL_SCANCODE_A]) {
             player.xVel = -4;

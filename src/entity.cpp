@@ -27,7 +27,7 @@ Entity::Entity(std::string name, int xPos, int yPos, bool direction) {
     this->yVel = 0;
     this->health = 100;
     this->cancelGravity = false;
-    this->zombieTargetLadder = NULL;
+    this->targetLadder = NULL;
 }
 
 Entity::~Entity() {
@@ -68,7 +68,7 @@ bool Entity::updateHealth(int offset) {
 }
 
 bool Entity::isOnFloor(int floorY) {
-    if (this->tile_l->pos.y + 128 >= floorY && this->tile_l->pos.y + 128 - this->yVel <= floorY) {
+    if (this->tile_l->pos.y + 128 >= floorY && this->tile_l->pos.y + 128 - abs(this->yVel) <= floorY) {
         return true;
     }
     return false;
@@ -103,18 +103,18 @@ void Entity::moveZombie(Entity *player, std::vector<Platform *> plats, std::vect
     if (this->cancelGravity) {
         // Was already climbing a ladder; continue climbing
         if (this->yVel > 0) {
-            if (this->getYPos() + 131 >= this->zombieTargetLadder->getYPos() + 150) {
+            if (this->getYPos() + 131 >= this->targetLadder->getYPos() + 150) {
                 // Stop climbing
                 this->cancelGravity = false;
-                this->zombieTargetLadder = NULL;
+                this->targetLadder = NULL;
                 this->yVel = 0;
             }
         } else {
             // Was climbing up
-            if (this->getYPos() + 125 <= this->zombieTargetLadder->getYPos()) {
+            if (this->getYPos() + 125 <= this->targetLadder->getYPos()) {
                 // Stop climbing
                 this->cancelGravity = false;
-                this->zombieTargetLadder = NULL;
+                this->targetLadder = NULL;
                 this->yVel = 0;
             }
         }
@@ -129,12 +129,12 @@ void Entity::moveZombie(Entity *player, std::vector<Platform *> plats, std::vect
             if (abs(bestLadder->getXPos() - this->getXPos()) < 8) {
                 this->xVel = 0;
                 this->cancelGravity = true;
-                this->zombieTargetLadder = bestLadder;
-                this->yVel = -3;
+                this->targetLadder = bestLadder;
+                this->yVel = -2.5;
                 return;
             } else {
                 this->direction = (bestLadder->getXPos() > this->getXPos() ? RIGHT : LEFT);
-                this->xVel = (this->direction == RIGHT ? 3 : -3);
+                this->xVel = (this->direction == RIGHT ? 2.5 : -2.5);
                 return;
             }
         }
@@ -147,23 +147,23 @@ void Entity::moveZombie(Entity *player, std::vector<Platform *> plats, std::vect
             if (abs(bestLadder->getXPos() - this->getXPos()) < 8) {
                 this->xVel = 0;
                 this->cancelGravity = true;
-                this->zombieTargetLadder = bestLadder;
-                this->yVel = 3;
+                this->targetLadder = bestLadder;
+                this->yVel = 2;
                 this->tile_l->pos.y += 4;
                 this->tile_r->pos.y += 4;
                 return;
             } else {
                 this->direction = (bestLadder->getXPos() > this->getXPos() ? RIGHT : LEFT);
-                this->xVel = (this->direction == RIGHT ? 3 : -3);
+                this->xVel = (this->direction == RIGHT ? 2.5 : -2.5);
                 return;
             }
         }
     }
     // Sideways stuff
     if (player->getXPos() < this->getXPos()) {
-        this->xVel = -3;
+        this->xVel = -2.5;
     } else {
-        this->xVel = 3;
+        this->xVel = 2.5;
     }
     // TODO finish completely climbing the ladder
 }
