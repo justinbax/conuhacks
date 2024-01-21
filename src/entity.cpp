@@ -7,6 +7,7 @@ Entity::Entity(std::string name, int xPos, int yPos, bool direction) {
     this->tile_r = new Tile(imgDir + name + "-r.png", xPos, yPos);
     this->xVel = 0;
     this->yVel = 0;
+    this->health = 100;
 }
 
 Entity::~Entity() {
@@ -37,15 +38,26 @@ void Entity::updatePos() {
     this->tile_r->pos.y += this->yVel;
 }
 
-void Entity::updateHealth(int offset) {
+bool Entity::updateHealth(int offset) {
     this->health += offset;
     if (this->health > 100) {
         this->health = 100;
     }
+    return this->health <= 0;
 }
 
-bool Entity::isOnFloor() {
-    if (this->tile_l->pos.y >= 600 - 128) {
+bool Entity::isOnFloor(int floorY) {
+    if (this->tile_l->pos.y + 128 >= floorY && this->tile_l->pos.y + 128 - this->yVel <= floorY) {
+        return true;
+    }
+    return false;
+}
+
+bool Entity::bouncePlatform(Platform plat) {
+    if (this->isOnFloor(plat.yPos)) {
+        this->tile_l->pos.y = plat.yPos - 128;
+        this->tile_r->pos.y = plat.yPos - 128;
+        this->yVel = 0.0f;
         return true;
     }
     return false;

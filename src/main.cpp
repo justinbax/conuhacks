@@ -10,9 +10,9 @@
 #define SCR_WIDTH 800
 #define SCR_HEIGHT 600
 
-Entity spawnZombie() {
-    //zombie is the name of the folder! Need to update the pixel art
-    Entity tmp("zombie", 64, 64, LEFT);
+Entity *spawnZombie() {
+    // zombie is the name of the folder! Need to update the pixel art
+    Entity *tmp = new Entity("zombie", 64, 64, LEFT);
     return tmp;
 }
 
@@ -28,7 +28,7 @@ void shoot(std::vector<Entity *> &bullets, int xPos, int yPos, bool direction) {
 }
 
 int main(int argc, char **argv) {
-    std::cout << "A shooter game";
+    std::cout << "A shooter game\n";
 
     SDL_Window *window = NULL;
     SDL_Surface *screenSurface = NULL;
@@ -59,6 +59,7 @@ int main(int argc, char **argv) {
     Entity buildings_silhouette("buildings_silhouette", 0, 0, LEFT);
     Entity far_buildings("far_buildings", 0, 0, LEFT);
     Entity buildings_fore("buildings_fore", 0, 0, LEFT);
+    
     // Active elements   
     Entity player("shooter", 20, 536, LEFT);
     Entity zombie = spawnZombie();
@@ -69,8 +70,12 @@ int main(int argc, char **argv) {
     std::vector<Entity *> zombies;
     uint32_t lastShot = SDL_GetTicks();
 
+    Platform floorPlat("content/bob/bob-l.png", 1000, 0, 500);
+
     SDL_Event e;
     bool quit = false;
+
+    zombies.push_back(spawnZombie());
 
     while (!quit) {
         uint64_t start = SDL_GetPerformanceCounter();
@@ -79,22 +84,20 @@ int main(int argc, char **argv) {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
                 quit = true;
+                continue;
             }
         }
 
         // Handle keyboard input
         const uint8_t *state = SDL_GetKeyboardState(NULL);
         if (state[SDL_SCANCODE_W]) {
-            if (player.isOnFloor()) {
+            if (player.isOnFloor(floorPlat.yPos)) {
                 player.yVel = -7;
             }
         }
 
         // Physics logic
-        player.yVel += 0.3f;
-        if (player.yVel >= 0 && player.isOnFloor()) {
-            player.yVel = 0;
-        }
+        player.yVel = (player.yVel >= 5.0f ? player.yVel : player.yVel + 0.3f);
         // Moving left and right
         if (state[SDL_SCANCODE_A]) {
             player.xVel = -3;
@@ -114,6 +117,8 @@ int main(int argc, char **argv) {
 
         player.updatePos();
 
+        player.bouncePlatform(floorPlat);
+
         SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
         backdrop.draw(screenSurface);
         buildings_silhouette.draw(screenSurface);
@@ -122,8 +127,15 @@ int main(int argc, char **argv) {
 
         ground.draw(screenSurface);
         player.draw(screenSurface);
-        zombie.draw(screenSurface);
-        zombie.updatePos();
+        
+        for (int i = 0; i < zombies.size(); i++) {
+            zombies[i]->draw(screenSurface);
+            zombies[i]->updatePos();
+
+            // Gravity
+            zombies[i]->yVel += 0.3f;
+            zombies[i]->bouncePlatform(floorPlat);
+        }
 
         for (int i = 0; i < bullets.size(); i++) {
             bullets[i]->draw(screenSurface);
@@ -133,8 +145,12 @@ int main(int argc, char **argv) {
             for (int j = 0; j < zombies.size(); j++) {
                 if (bullets[i]->getXPos() - zombies[j]->getXPos() < 32 && bullets[i]->getXPos() - zombies[j]->getXPos() < 64) {
                     // Collision
-                    std::cout << "collision";
-                    zombies[j]->updateHealth(-10);
+                    if (zombies[j]->updateHealth(-25)) {
+                        Entity *zombie = zombies[j];
+                        zombies.erase(zombies.begin() + j);
+                        j--;
+                        delete zombie;
+                    }
                     Entity *bullet = bullets[i];
                     bullets.erase(bullets.begin() + i);
                     delete bullet;
@@ -147,8 +163,6 @@ int main(int argc, char **argv) {
         uint64_t end = SDL_GetPerformanceCounter();
         float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
         SDL_Delay(floor(16.666f - elapsedMS));
-
-        //TODO - checkQuitConditions();
     }
 
     SDL_DestroyWindow(window);
