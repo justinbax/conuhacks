@@ -21,8 +21,27 @@ Entity *getBestLadder(Entity *zombie, std::vector<Entity *> ladders, bool goUp) 
 Entity::Entity(std::string name, int xPos, int yPos, bool direction) {
     std::string imgDir = "content/" + name + "/";
     this->direction = direction;
-    this->tile_l= new Tile(imgDir +  name + "-l.png", xPos, yPos);
-    this->tile_r = new Tile(imgDir + name + "-r.png", xPos, yPos);
+    this->tiles_l = {};
+    this->tiles_l.push_back(new Tile(imgDir +  name + "-l.png", xPos, yPos));
+    this->tiles_r = {};
+    this->tiles_r.push_back(new Tile(imgDir +  name + "-r.png", xPos, yPos));
+    this->xVel = 0;
+    this->yVel = 0;
+    this->health = 100;
+    this->cancelGravity = false;
+    this->targetLadder = NULL;
+    this->currentTile = 0;
+}
+
+Entity::Entity(std::vector<std::string> names, int xPos, int yPos, bool direction) {
+    this->tiles_l = {};
+    this->tiles_r = {};
+    for (int i = 0; i < names.size(); i++) {
+        std::string imgDir = "content/" + names[i] + "/";
+        this->tiles_l.push_back(new Tile(imgDir + names[i] + "-l.png", xPos, yPos));
+        this->tiles_r.push_back(new Tile(imgDir + names[i] + "-r.png", xPos, yPos));
+    }
+    this->direction = direction;
     this->xVel = 0;
     this->yVel = 0;
     this->health = 100;
@@ -38,25 +57,27 @@ Entity::~Entity() {
 
 void Entity::draw(SDL_Surface *screen) {
     if (this->direction == LEFT) {
-        this->tile_l->draw(screen);
+        this->tiles_l[this->currentTile]->draw(screen);
     } else {
-        this->tile_r->draw(screen);
+        this->tiles_r[this->currentTile]->draw(screen);
     }
 }
 
 int Entity::getXPos() {
-    return this->tile_l->pos.x;
+    return this->tiles_l[this->currentTile]->pos.x;
 }
 
 int Entity::getYPos() {
-    return this->tile_l->pos.y;
+    return this->tiles_l[this->currentTile]->pos.y;
 }
 
 void Entity::updatePos() {
-    this->tile_l->pos.x += this->xVel;
-    this->tile_l->pos.y += this->yVel;
-    this->tile_r->pos.x += this->xVel;
-    this->tile_r->pos.y += this->yVel;
+    for (int i = 0; i < this->tiles_l.size(); i++) {
+        this->tiles_l[i]->pos.x += this->xVel;
+        this->tiles_l[i]->pos.y += this->yVel;
+        this->tiles_r[i]->pos.x += this->xVel;
+        this->tiles_r[i]->pos.y += this->yVel;
+    }
 }
 
 bool Entity::updateHealth(int offset) {
@@ -68,20 +89,22 @@ bool Entity::updateHealth(int offset) {
 }
 
 bool Entity::isOnFloor(int floorY) {
-    if (this->tile_l->pos.y + 128 >= floorY && this->tile_l->pos.y + 128 - abs(this->yVel) <= floorY) {
+    if (this->tiles_l[this->currentTile]->pos.y + 128 >= floorY && this->tiles_l[this->currentTile]->pos.y + 128 - abs(this->yVel) <= floorY) {
         return true;
     }
     return false;
 }
 
 bool Entity::bouncePlatform(Platform plat) {
-    if (this->tile_l->pos.x < plat.xPos || this->tile_l->pos.x > plat.xPos + plat.width) {
+    if (this->tiles_l[this->currentTile]->pos.x < plat.xPos || this->tiles_l[this->currentTile]->pos.x > plat.xPos + plat.width) {
         return false;
     }
 
     if (this->isOnFloor(plat.yPos)) {
-        this->tile_l->pos.y = plat.yPos - 128;
-        this->tile_r->pos.y = plat.yPos - 128;
+        for (int i = 0; i < this->tiles_l.size(); i++) {
+            this->tiles_l[i]->pos.y = plat.yPos - 128;
+            this->tiles_r[i]->pos.y = plat.yPos - 128;
+        }
         this->yVel = 0.0f;
         return true;
     }
@@ -94,6 +117,13 @@ bool Entity::bouncePlatforms(std::vector<Platform *> plats) {
         bounced |= this->bouncePlatform(*plats[i]);
     }
     return bounced;
+}
+
+void Entity::switchFrame() {
+    this->currentTile++;
+    if (this->currentTile >= this->tiles_l.size()) {
+        this->currentTile = 0;
+    }
 }
 
 //Player logic
@@ -149,8 +179,10 @@ void Entity::moveZombie(Entity *player, std::vector<Platform *> plats, std::vect
                 this->cancelGravity = true;
                 this->targetLadder = bestLadder;
                 this->yVel = 2;
-                this->tile_l->pos.y += 4;
-                this->tile_r->pos.y += 4;
+                for (int i = 0; i < this->tiles_l.size(); i++) {
+                    this->tiles_l[i]->pos.y += 4;
+                    this->tiles_r[i]->pos.y += 4;
+                }
                 return;
             } else {
                 this->direction = (bestLadder->getXPos() > this->getXPos() ? RIGHT : LEFT);

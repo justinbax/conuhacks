@@ -86,8 +86,9 @@ int main(int argc, char **argv) {
     Entity buildings_fore("buildings_fore", 0, 0, LEFT);
 
     
-    // Active elements   
-    Entity player("shooter", 20, 450, LEFT);
+    // Active elements
+    std::vector<std::string> shootersTiles = {"shooter1", "shooter2", "shooter3", "shooter4", "shooter5", "shooter6"};
+    Entity player(shootersTiles, 20, 450, LEFT);
     Entity ground("dirt", 100, 0, LEFT);
 
     // Other elements
@@ -96,6 +97,7 @@ int main(int argc, char **argv) {
     std::vector<Entity *> hearts;
     uint32_t lastShot = SDL_GetTicks();
     uint32_t lastHit = SDL_GetTicks();
+    uint32_t lastAnimationTick = SDL_GetTicks();
 
     std::vector<Platform *> platforms;
     std::vector<Entity *> ladders;
@@ -232,6 +234,7 @@ int main(int argc, char **argv) {
             // Else jumps
             if (player.bouncePlatform(*platforms[0])) {
                 player.yVel = -7;
+                player.switchFrame();
             }
         }
 
@@ -249,13 +252,19 @@ int main(int argc, char **argv) {
         }
 
         if (state[SDL_SCANCODE_SPACE] && SDL_GetTicks() > lastShot + 500) {
-            int bulletX = player.getXPos() + (player.direction == LEFT ? 0 : 48);
-            shoot(bullets, bulletX, player.getYPos() + 50, player.direction);
+            int bulletX = player.getXPos() + (player.direction == LEFT ? 0 : 64);
+            shoot(bullets, bulletX, player.getYPos() + 60, player.direction);
             lastShot = SDL_GetTicks();
         }
 
         player.updatePos();
         player.bouncePlatforms(platforms);
+
+        // Update player's animation
+        if (SDL_GetTicks() > lastAnimationTick + 200 && player.xVel != 0) {
+            player.switchFrame();
+            lastAnimationTick = SDL_GetTicks();
+        }
 
         // Spawn zombies and stuff
         // Zombie generator - Each second
