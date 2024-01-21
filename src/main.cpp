@@ -148,6 +148,10 @@ int main(int argc, char **argv) {
             gameOverText.append(" points.");
             Text gameOver(gameOverText, white, font);
             SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
+            backdrop.draw(screenSurface);
+            buildings_silhouette.draw(screenSurface);
+            far_buildings.draw(screenSurface);
+            buildings_fore.draw(screenSurface);
             gameOver.draw(screenSurface, 200, 300);
             SDL_UpdateWindowSurface(window);
 
