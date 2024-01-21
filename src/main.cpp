@@ -48,6 +48,7 @@ int main(int argc, char **argv) {
     Entity player("bob", 100, 0, LEFT);
     Entity ground("dirt", 100, 0, LEFT);
     std::vector<Entity *> bullets;
+    std::vector<Entity *> zombies;
     uint32_t lastShot = SDL_GetTicks();
 
     SDL_Event e;
@@ -98,6 +99,18 @@ int main(int argc, char **argv) {
         for (int i = 0; i < bullets.size(); i++) {
             bullets[i]->draw(screenSurface);
             bullets[i]->updatePos();
+
+            // TODO check if out of bounds
+            for (int j = 0; j < zombies.size(); j++) {
+                if (bullets[i]->getXPos() - zombies[j]->getXPos() < 32 && bullets[i]->getXPos() - zombies[j]->getXPos() < 64) {
+                    // Collision
+                    std::cout << "collision";
+                    zombies[j]->updateHealth(-10);
+                    Entity *bullet = bullets[i];
+                    bullets.erase(bullets.begin() + i);
+                    delete bullet;
+                }
+            }
         }
 
         SDL_UpdateWindowSurface(window);
