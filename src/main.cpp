@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCR_WIDTH, SCR_HEIGHT, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Zombie Killer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCR_WIDTH, SCR_HEIGHT, SDL_WINDOW_SHOWN);
     if (window == NULL) {
         std::cout << "Window could not be created! SDL_Error: %s\n" << SDL_GetError() << "\n";
         return 1;
@@ -33,7 +33,10 @@ int main(int argc, char **argv) {
 
     screenSurface = SDL_GetWindowSurface(window);
 
-    Entity player("bob", 100, 400, LEFT);
+    Entity player("bob", 100, 0, LEFT);
+    Entity ground("dirt", 100, 0, LEFT);
+
+
     SDL_Event e;
     bool quit = false;
 
@@ -69,6 +72,7 @@ int main(int argc, char **argv) {
         player.updatePos();
 
         SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
+        ground.draw(screenSurface);
         player.draw(screenSurface);
         SDL_UpdateWindowSurface(window);
 
