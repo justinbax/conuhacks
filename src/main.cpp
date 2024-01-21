@@ -3,9 +3,11 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <cmath>
 
 #include "entity.h"
+#include "text.h"
 
 #define SCR_WIDTH 800
 #define SCR_HEIGHT 600
@@ -62,6 +64,11 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    if ((TTF_Init())) {
+        std::cout << "SDL_ttf couldn't initialize: SDL_ttf Error: " << TTF_GetError() << "\n";
+        return 1;
+    }
+
     window = SDL_CreateWindow("Zombie Killer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCR_WIDTH, SCR_HEIGHT, SDL_WINDOW_SHOWN);
     if (window == NULL) {
         std::cout << "Window could not be created! SDL_Error: %s\n" << SDL_GetError() << "\n";
@@ -111,6 +118,12 @@ int main(int argc, char **argv) {
     hearts.push_back(new Entity("heart", 136, 5, LEFT));
     hearts.push_back(new Entity("heart", 178, 5, LEFT));
 
+    // Text stuff
+    TTF_Font *font = TTF_OpenFont("content/OpenSans.ttf", 24);
+    if (!font) std::cout << "no font";
+    SDL_Color white = {0xFF, 0xFF, 0xFF};
+
+    bool gameOver = false;
     SDL_Event e;
     bool quit = false;
     int zombieCounter = 0;
@@ -121,28 +134,27 @@ int main(int argc, char **argv) {
     while (!quit) {
         uint64_t start = SDL_GetPerformanceCounter();
 
-        // Zombie generator - Each second
-        if (zombieCounter % zombieDelay == 0) {
-            zombies.push_back(spawnZombie());
-            zombieCounter = 0;
-            zombieSpawned++;
-        } zombieCounter++;
-
-        // Zombie level up - Each 10 zombies
-        if (zombieSpawned % 10 == 0 && zombieSpawned != 0) {
-            if (zombieLevel < 5) {
-                zombieLevel++;
-                zombieDelay -= 40;
-                std::cout << "Zombie level up! Level " << zombieLevel << "\n";
-            }
-        }
-
         // Poll for events
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
                 quit = true;
                 continue;
             }
+        }
+
+        if (gameOver) {
+            std::string gameOverText = "Game over! You scored ";
+            gameOverText.append(std::to_string(score));
+            gameOverText.append(" points.");
+            Text gameOver(gameOverText, white, font);
+            SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
+            gameOver.draw(screenSurface, 200, 300);
+            SDL_UpdateWindowSurface(window);
+
+            uint64_t end = SDL_GetPerformanceCounter();
+            float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
+            SDL_Delay(floor(16.666f - elapsedMS));
+            continue;
         }
 
         // Handle keyboard input
@@ -208,6 +220,24 @@ int main(int argc, char **argv) {
         player.updatePos();
         player.bouncePlatforms(platforms);
 
+        // Spawn zombies and stuff
+        // Zombie generator - Each second
+        if (zombieCounter % zombieDelay == 0) {
+            zombies.push_back(spawnZombie());
+            zombieCounter = 0;
+            zombieSpawned++;
+        } zombieCounter++;
+
+        // Zombie level up - Each 10 zombies
+        if (zombieSpawned % 10 == 0 && zombieSpawned != 0) {
+            if (zombieLevel < 5) {
+                zombieLevel++;
+                zombieDelay -= 40;
+                std::cout << "Zombie level up! Level " << zombieLevel << "\n";
+            }
+        }
+
+        // Draw stuff
         SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
         // Background drawing
         backdrop.draw(screenSurface);
@@ -265,7 +295,7 @@ int main(int argc, char **argv) {
                 player.updateHealth(-20);
                 hearts.erase(hearts.begin() + hearts.size() - 1);
                 if (player.updateHealth(0)) {
-                    quit = true;
+                    gameOver = true;
                 }
                 lastHit = SDL_GetTicks();
             }
