@@ -60,6 +60,7 @@ int main(int argc, char **argv) {
     // Get window surface
     screenSurface = SDL_GetWindowSurface(window);
 
+    // Map elements
     Entity backdrop("backdrop", 0, 0, LEFT);
     Entity buildings_silhouette("buildings_silhouette", 0, 0, LEFT);
     Entity far_buildings("far_buildings", 0, 0, LEFT);
