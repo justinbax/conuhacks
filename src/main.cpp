@@ -85,6 +85,7 @@ int main(int argc, char **argv) {
     // Other elements
     std::vector<Entity *> bullets;
     std::vector<Entity *> zombies;
+    std::vector<Entity *> hearts;
     uint32_t lastShot = SDL_GetTicks();
     uint32_t lastHit = SDL_GetTicks();
 
@@ -104,19 +105,36 @@ int main(int argc, char **argv) {
     ladders.push_back(new Entity("ladder", 150, 425, LEFT));
     ladders.push_back(new Entity("ladder", 650-64, 425, LEFT));
 
+    hearts.push_back(new Entity("heart", 10, 5, LEFT));
+    hearts.push_back(new Entity("heart", 52, 5, LEFT));
+    hearts.push_back(new Entity("heart", 94, 5, LEFT));
+    hearts.push_back(new Entity("heart", 136, 5, LEFT));
+    hearts.push_back(new Entity("heart", 178, 5, LEFT));
 
     SDL_Event e;
     bool quit = false;
     int zombieCounter = 0;
+    int zombieSpawned = 0;
+    int zombieLevel = 0;
+    int zombieDelay = 360;
 
     while (!quit) {
         uint64_t start = SDL_GetPerformanceCounter();
 
-        // Zombie generator
-        if (zombieCounter % 300 == 0) {
+        // Zombie generator - Each second
+        if (zombieCounter % 360 == 0) {
             zombies.push_back(spawnZombie());
             zombieCounter = 0;
+            zombieSpawned++;
         } zombieCounter++;
+
+        // Zombie level up - Each 10 zombies
+        if (zombieSpawned % 10 == 0 && zombieSpawned != 0) {
+            if (zombieLevel < 4) {
+                zombieLevel++;
+                zombieDelay -= 60;
+            }
+        }
 
         // Poll for events
         while (SDL_PollEvent(&e)) {
@@ -147,7 +165,7 @@ int main(int argc, char **argv) {
             player.xVel = 0;
         }
 
-        if (state[SDL_SCANCODE_SPACE] && SDL_GetTicks() > lastShot + 300) {
+        if (state[SDL_SCANCODE_SPACE] && SDL_GetTicks() > lastShot + 500) {
             int bulletX = player.getXPos() + (player.direction == LEFT ? 0 : 48);
             shoot(bullets, bulletX, player.getYPos() + 50, player.direction);
             lastShot = SDL_GetTicks();
@@ -162,6 +180,10 @@ int main(int argc, char **argv) {
         buildings_silhouette.draw(screenSurface);
         far_buildings.draw(screenSurface);
         buildings_fore.draw(screenSurface);
+
+        for (int i = 0; i < hearts.size(); i++) {
+            hearts[i]->draw(screenSurface);
+        }
 
         for (int i = 0; i < platforms.size(); i++) {
             platforms[i]->draw(screenSurface);
@@ -178,7 +200,7 @@ int main(int argc, char **argv) {
             zombies[i]->moveZombie(&player, platforms, ladders);
             zombies[i]->updatePos();
             // Gravity
-            if (!zombies[i]->cancelGravity) zombies[i]->yVel += 0.3f;
+            zombies[i]->yVel += 0.3f;
             zombies[i]->bouncePlatforms(platforms);
         }
 
@@ -196,6 +218,8 @@ int main(int argc, char **argv) {
                     if (zombies[j]->updateHealth(-25)) {
                         zombies.erase(zombies.begin() + j);
                         zombieKilled++;
+                        std::cout << "You killed " << zombieKilled << " zombies!\n";
+                        std::cout << "Your score is " << zombieKilled * 100 << "!\n";
                         j--;
                     }
                 }
@@ -206,6 +230,7 @@ int main(int argc, char **argv) {
         for (int i = 0; i < zombies.size(); i++) {
             if (abs(zombies[i]->getXPos() - player.getXPos()) <= 65 && abs(zombies[i]->getYPos() - player.getYPos()) <= 129 && SDL_GetTicks() > lastHit + 1000) {
                 player.updateHealth(-20);
+                hearts.erase(hearts.begin() + hearts.size() - 1);
                 if (player.updateHealth(0)) {
                     quit = true;
                 }
