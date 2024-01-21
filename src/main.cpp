@@ -122,7 +122,7 @@ int main(int argc, char **argv) {
         uint64_t start = SDL_GetPerformanceCounter();
 
         // Zombie generator - Each second
-        if (zombieCounter % 360 == 0) {
+        if (zombieCounter % zombieDelay == 0) {
             zombies.push_back(spawnZombie());
             zombieCounter = 0;
             zombieSpawned++;
@@ -130,9 +130,10 @@ int main(int argc, char **argv) {
 
         // Zombie level up - Each 10 zombies
         if (zombieSpawned % 10 == 0 && zombieSpawned != 0) {
-            if (zombieLevel < 4) {
+            if (zombieLevel < 5) {
                 zombieLevel++;
-                zombieDelay -= 60;
+                zombieDelay -= 40;
+                std::cout << "Zombie level up! Level " << zombieLevel << "\n";
             }
         }
 
