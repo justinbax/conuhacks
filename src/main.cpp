@@ -125,9 +125,6 @@ int main(int argc, char **argv) {
 
         // Handle keyboard input
         const uint8_t *state = SDL_GetKeyboardState(NULL);
-        if (state[SDL_SCANCODE_W] && player.getXPos() >  && player.getYPos() == ){
-            player.yVel = 7;
-        }
         if (state[SDL_SCANCODE_W]) {
             if (player.bouncePlatform(*platforms[0])) {
                 player.yVel = -7;
