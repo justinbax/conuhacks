@@ -1,4 +1,5 @@
 #include "entity.h"
+#include <iostream>
 
 Entity *getBestLadder(Entity *zombie, std::vector<Entity *> ladders, bool goUp) {
     int desiredLadderY = zombie->getYPos() + (goUp ? -128 : 128);
@@ -133,9 +134,10 @@ void Entity::moveZombie(Entity *player, std::vector<Platform *> plats, std::vect
     if (this->cancelGravity) {
         // Was already climbing a ladder; continue climbing
         if (this->yVel > 0) {
-            if (this->getYPos() + 131 >= this->targetLadder->getYPos() + 150) {
+            if (this->getYPos() + 140 >= this->targetLadder->getYPos() + 150) {
                 // Stop climbing
                 this->cancelGravity = false;
+                std::cout << "stop down";
                 this->targetLadder = NULL;
                 this->yVel = 0;
             }
