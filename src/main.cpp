@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
     SDL_Window *window = NULL;
     SDL_Surface *screenSurface = NULL;
     int imgFlags = IMG_INIT_PNG;
-    int zombieKilled = 0;
+    int score = 0;
 
     // Initialize SDL - Throw error message if needed
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -246,13 +246,12 @@ int main(int argc, char **argv) {
                 if (bullets[i]->getXPos() - zombies[j]->getXPos() > 0 && bullets[i]->getXPos() - zombies[j]->getXPos() < 64
                 && bullets[i]->getYPos() - zombies[j]->getYPos() > 0 && bullets[i]->getYPos() - zombies[j]->getYPos() < 128) {
                     bullets.erase(bullets.begin() + i);
-                    
+                    score += 10;
+
                     // Collision
                     if (zombies[j]->updateHealth(-25)) {
                         zombies.erase(zombies.begin() + j);
-                        zombieKilled++;
-                        std::cout << "You killed " << zombieKilled << " zombies!\n";
-                        std::cout << "Your score is " << zombieKilled * 100 << "!\n";
+                        score += 100;
                         j--;
                     }
                 }
@@ -261,7 +260,7 @@ int main(int argc, char **argv) {
 
         // Player x Zombie collision handling
         for (int i = 0; i < zombies.size(); i++) {
-            if (abs(zombies[i]->getXPos() - player.getXPos()) <= 65 && abs(zombies[i]->getYPos() - player.getYPos()) <= 129 && SDL_GetTicks() > lastHit + 1000) {
+            if (abs(zombies[i]->getXPos() - player.getXPos()) <= 65 && abs(zombies[i]->getYPos() - player.getYPos()) <= 129 && SDL_GetTicks() > lastHit + 1500) {
                 player.updateHealth(-20);
                 hearts.erase(hearts.begin() + hearts.size() - 1);
                 if (player.updateHealth(0)) {
@@ -278,8 +277,8 @@ int main(int argc, char **argv) {
         SDL_Delay(floor(16.666f - elapsedMS));
     }
 
-    std::cout << "You killed " << zombieKilled << " zombies!\n";
-    std::cout << "Your score is " << zombieKilled * 100 << "!\n";
+    std::cout << "Your score is " << score << "!\n";
+    std::cout << "100 points per kill, 10 points per hit.\n";
 
     SDL_DestroyWindow(window);
     SDL_Quit();
