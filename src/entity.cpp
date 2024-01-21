@@ -11,8 +11,9 @@ Entity::Entity(std::string name, int xPos, int yPos, bool direction) {
 }
 
 Entity::~Entity() {
-    delete this->tile_l;
-    delete this->tile_r;
+    // actually this is automatic and i'm just dumb
+    //delete this->tile_l;
+    //delete this->tile_r;
 }
 
 void Entity::draw(SDL_Surface *screen) {
@@ -54,6 +55,10 @@ bool Entity::isOnFloor(int floorY) {
 }
 
 bool Entity::bouncePlatform(Platform plat) {
+    if (this->tile_l->pos.x < plat.xPos || this->tile_l->pos.x > plat.xPos + plat.width) {
+        return false;
+    }
+
     if (this->isOnFloor(plat.yPos)) {
         this->tile_l->pos.y = plat.yPos - 128;
         this->tile_r->pos.y = plat.yPos - 128;
@@ -61,6 +66,14 @@ bool Entity::bouncePlatform(Platform plat) {
         return true;
     }
     return false;
+}
+
+bool Entity::bouncePlatforms(std::vector<Platform *> plats) {
+    bool bounced = false;
+    for (int i = 0; i < plats.size(); i++) {
+        bounced |= this->bouncePlatform(*plats[i]);
+    }
+    return bounced;
 }
 
 //Player logic

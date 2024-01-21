@@ -1,6 +1,8 @@
 #ifndef Entity_H
 #define Entity_H
 
+#include <vector>
+
 #include "tile.h"
 #include "platform.h"
 
@@ -19,6 +21,7 @@ class Entity {
         void damageZombie();
         bool isOnFloor(int floorY);
         bool bouncePlatform(Platform plat);
+        bool bouncePlatforms(std::vector<Platform *> plats);
         float xVel;
         float yVel;
         bool direction;

@@ -65,7 +65,8 @@ int main(int argc, char **argv) {
     std::vector<Entity *> zombies;
     uint32_t lastShot = SDL_GetTicks();
 
-    Platform floorPlat("content/bob/bob-l.png", 1000, 0, 500);
+    std::vector<Platform *> platforms;
+    platforms.push_back(new Platform("content/bob/bob-r.png", 800, 0, 600));
 
     SDL_Event e;
     bool quit = false;
@@ -86,7 +87,7 @@ int main(int argc, char **argv) {
         // Handle keyboard input
         const uint8_t *state = SDL_GetKeyboardState(NULL);
         if (state[SDL_SCANCODE_W]) {
-            if (player.isOnFloor(floorPlat.yPos)) {
+            if (player.bouncePlatform(*platforms[0])) {
                 player.yVel = -7;
             }
         }
@@ -111,8 +112,7 @@ int main(int argc, char **argv) {
         }
 
         player.updatePos();
-
-        player.bouncePlatform(floorPlat);
+        player.bouncePlatforms(platforms);
 
         SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
         backdrop.draw(screenSurface);
@@ -126,10 +126,9 @@ int main(int argc, char **argv) {
         for (int i = 0; i < zombies.size(); i++) {
             zombies[i]->draw(screenSurface);
             zombies[i]->updatePos();
-
             // Gravity
             zombies[i]->yVel += 0.3f;
-            zombies[i]->bouncePlatform(floorPlat);
+            zombies[i]->bouncePlatforms(platforms);
         }
 
         for (int i = 0; i < bullets.size(); i++) {
@@ -151,6 +150,10 @@ int main(int argc, char **argv) {
                     delete bullet;
                 }
             }
+        }
+
+        for (int i = 0; i < platforms.size(); i++) {
+            platforms[i]->draw(screenSurface);
         }
 
         SDL_UpdateWindowSurface(window);
