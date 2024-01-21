@@ -11,18 +11,20 @@ class Entity {
         Entity(std::string name = "", int xPos = 0, int yPos = 0, bool direction = RIGHT);
         ~Entity();
         void draw(SDL_Surface *screen);
+        int getXPos();
+        int getYPos();
         void updatePos();
         void updateHealth(int offset);
         void movementZombie();
         Entity spawnZombie();
         void damageZombie();
         bool isOnFloor();
-        int xVel;
-        int yVel;
+        float xVel;
+        float yVel;
+        bool direction;
 
     private:
         int health;
-        bool direction;
         Tile *tile_l;
         Tile *tile_r;
 };

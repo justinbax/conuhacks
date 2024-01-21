@@ -11,10 +11,12 @@ class Tile {
         ~Tile();
         void draw(SDL_Surface *screen);
         void move(int xOffset, int yOffset);
+        int getXPos();
+        int getYPos();
+        SDL_Rect pos;
 
     private:
         SDL_Surface *surface;
-        SDL_Rect pos;
 };
 
 #endif // ifndef TILE_H
