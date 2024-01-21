@@ -22,9 +22,19 @@ void Entity::draw(SDL_Surface *screen) {
     }
 }
 
+int Entity::getXPos() {
+    return this->tile_l->pos.x;
+}
+
+int Entity::getYPos() {
+    return this->tile_l->pos.y;
+}
+
 void Entity::updatePos() {
-    this->tile_l->move(this->xVel, this->yVel);
-    this->tile_l->move(this->xVel, this->yVel);
+    this->tile_l->pos.x += this->xVel;
+    this->tile_l->pos.y += this->yVel;
+    this->tile_r->pos.x += this->xVel;
+    this->tile_r->pos.y += this->yVel;
 }
 
 void Entity::updateHealth(int offset) {
@@ -35,5 +45,8 @@ void Entity::updateHealth(int offset) {
 }
 
 bool Entity::isOnFloor() {
-    return true;
+    if (this->tile_l->pos.y >= 550) {
+        return true;
+    }
+    return false;
 }
