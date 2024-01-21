@@ -85,6 +85,7 @@ int main(int argc, char **argv) {
     std::vector<Entity *> bullets;
     std::vector<Entity *> zombies;
     uint32_t lastShot = SDL_GetTicks();
+    uint32_t lastHit = SDL_GetTicks();
 
     std::vector<Platform *> platforms;
     std::vector<Entity *> ladders;
@@ -96,11 +97,11 @@ int main(int argc, char **argv) {
     platforms.push_back(new Platform("content/500/500-r.png", 500, 150, 425));
 
     ladders.push_back(new Entity("ladder", 150, 125, LEFT));
-    ladders.push_back(new Entity("ladder", 650, 125, LEFT));
-    ladders.push_back(new Entity("ladder", 300, 275, LEFT));
+    ladders.push_back(new Entity("ladder", 650-64, 125, LEFT));
+    ladders.push_back(new Entity("ladder", 300-64, 275, LEFT));
     ladders.push_back(new Entity("ladder", 500, 275, LEFT));
     ladders.push_back(new Entity("ladder", 150, 425, LEFT));
-    ladders.push_back(new Entity("ladder", 650, 425, LEFT));
+    ladders.push_back(new Entity("ladder", 650-64, 425, LEFT));
 
 
     SDL_Event e;
@@ -198,6 +199,17 @@ int main(int argc, char **argv) {
                     bullets.erase(bullets.begin() + i);
                     delete bullet;
                 }
+            }
+        }
+
+        // Player x Zombie collision handling
+        for (int i = 0; i < zombies.size(); i++) {
+            if (abs(zombies[i]->getXPos() - player.getXPos()) <= 65 && abs(zombies[i]->getYPos() - player.getYPos()) <= 129 && SDL_GetTicks() > lastHit + 1000) {
+                player.updateHealth(-20);
+                if (player.updateHealth(0)) {
+                    quit = true;
+                }
+                lastHit = SDL_GetTicks();
             }
         }
 
