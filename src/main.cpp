@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 
 #include <SDL2/SDL.h>
@@ -132,6 +133,14 @@ int main(int argc, char **argv) {
     int zombieLevel = 0;
     int zombieDelay = 360;
 
+    // Read high score
+    int highscore = 0;
+    std::ifstream highScoreFile("highscore.txt");
+    std::string highScoreString;
+    std::getline(highScoreFile, highScoreString);
+    int highScore = strtol(highScoreString.c_str(), NULL, 10);
+    highScoreFile.close();
+
     while (!quit) {
         uint64_t start = SDL_GetPerformanceCounter();
 
@@ -147,13 +156,17 @@ int main(int argc, char **argv) {
             std::string gameOverText = "Game over! You scored ";
             gameOverText.append(std::to_string(score));
             gameOverText.append(" points.");
+            std::string gameOverText2 = "High score: ";
+            gameOverText2.append(std::to_string(highScore));
             Text gameOver(gameOverText, white, font);
+            Text gameOver2(gameOverText2, white, font);
             SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
             backdrop.draw(screenSurface);
             buildings_silhouette.draw(screenSurface);
             far_buildings.draw(screenSurface);
             buildings_fore.draw(screenSurface);
             gameOver.draw(screenSurface, 200, 300);
+            gameOver2.draw(screenSurface, 300, 350);
             SDL_UpdateWindowSurface(window);
 
             uint64_t end = SDL_GetPerformanceCounter();
@@ -334,6 +347,12 @@ int main(int argc, char **argv) {
 
     std::cout << "Your score is " << score << "!\n";
     std::cout << "100 points per kill, 10 points per hit.\n";
+
+    if (score > highScore) {
+        std::ofstream highScoreFile("highscore.txt", std::ofstream::trunc);
+        highScoreFile << score;
+        highScoreFile.close();
+    }
 
     SDL_DestroyWindow(window);
     SDL_Quit();
