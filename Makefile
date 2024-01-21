@@ -10,7 +10,7 @@ LIBDIR = $(BASELIBDIR)
 
 # All source and header files found within src/ with corresponding object files for .c files
 SRCFILES = $(wildcard $(SRCDIR)/*.cpp)
-OBJFILES = $(SRCFILES:$(SRCDIR)/%.c=$(BINDIR)/%.o)
+OBJFILES = $(SRCFILES:$(SRCDIR)/%.cpp=$(BINDIR)/%.o)
 EXECUTABLE = $(BINDIR)/main
 HEADFILES = $(wildcard $(SRCDIR)/*.h)
 HEADFILES += $(wildcard $(SRCDIR)/*.hpp)
@@ -47,7 +47,7 @@ release: $(EXECUTABLE)
 $(EXECUTABLE): $(OBJFILES)
 	$(CXX) $(CXXFLAGS) -o $(EXECUTABLE) $(OBJFILES) $(addprefix -I,$(INCLUDEDIR)) $(addprefix -L,$(LIBDIR)) $(addprefix -l,$(LIBRARIES))
 
-$(BINDIR)/%.o: $(SRCDIR)/%.c $(HEADFILES)
+$(BINDIR)/%.o: $(SRCDIR)/%.cpp $(HEADFILES)
 	$(CXX) $(CXXFLAGS) -I$(INCLUDEDIR) -c -o $@ $<
 
 .phony: all debug release
